@@ -41,7 +41,6 @@ export function MoodScreen() {
       </div>
 
       <div className="relative mt-8 text-center">
-        <p className="mb-3 text-meta text-ink-muted">Or choose on the wheel</p>
         <div className="mx-auto h-16 w-56 overflow-hidden">
           <div className="h-28 w-56 rounded-t-full bg-gradient-to-r from-lavender via-coral to-lavender opacity-80" />
         </div>
