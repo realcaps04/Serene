@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #faf9ff;
+  --bg-secondary: #f5f3ff;
+  --bg-card: #ffffff;
+  --text-primary: #172554;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-subtle: #ede9fe;
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  color-scheme: light;
+}
+
+.dark {
+  --bg-primary: #16132a;
+  --bg-secondary: #1e1a38;
+  --bg-card: #252048;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-subtle: #3b3470;
+  --nav-bg: rgba(30, 26, 56, 0.86);
+  color-scheme: dark;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  min-height: 100dvh;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: linear-gradient(180deg, #faf9ff 0%, #fff5fa 100%);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.dark body,
+.dark {
+  background: linear-gradient(180deg, #16132a 0%, #241830 100%);
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #5865f2;
+  outline-offset: 3px;
+}
+
+.wellness-bg {
+  background: linear-gradient(180deg, var(--bg-primary) 0%, #fff5fa 100%);
+}
+
+.dark .wellness-bg {
+  background: linear-gradient(180deg, var(--bg-primary) 0%, #241830 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #5865f2, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.pressable {
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.pressable:active {
+  transform: scale(0.98);
+}
