@@ -48,15 +48,19 @@ export function Modal({
   title,
   children,
   onClose,
+  centered = false,
 }: {
   open: boolean;
   title: string;
   children: ReactNode;
   onClose: () => void;
+  centered?: boolean;
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 grid place-items-end sm:place-items-center p-4">
+    <div
+      className={`fixed inset-0 z-50 grid p-4 ${centered ? "place-items-center" : "place-items-end sm:place-items-center"}`}
+    >
       <button className="absolute inset-0 bg-indigo-deep/30 backdrop-blur-sm" aria-label="Close" onClick={onClose} />
       <div
         role="dialog"

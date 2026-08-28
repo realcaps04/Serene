@@ -2,6 +2,7 @@ import { Download, RefreshCw, Share, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { PrimaryButton, SecondaryButton } from "../ui/Button";
+import { Modal } from "../ui/Overlay";
 import {
   INSTALL_DISMISS_KEY,
   isIosSafari,
@@ -78,40 +79,24 @@ export function PwaPrompts() {
 
   return (
     <>
-      {needRefresh ? (
-        <div className="fixed inset-x-0 top-0 z-[60] px-4 pt-[max(12px,env(safe-area-inset-top))]">
-          <div
-            role="dialog"
-            aria-labelledby="update-title"
-            className="mx-auto max-w-shell rounded-card-lg border border-line bg-white p-4 shadow-lift dark:bg-surface-card"
-          >
-            <div className="flex items-start gap-3">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-lavender-surface text-indigo-brand">
-                <RefreshCw size={18} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p id="update-title" className="font-semibold text-ink">
-                  Update available
-                </p>
-                <p className="mt-1 text-body text-ink-secondary">
-                  A newer version of Serene is ready. Refresh to get the latest improvements.
-                </p>
-                <div className="mt-3 flex gap-2">
-                  <PrimaryButton
-                    className="!px-4 !py-2.5"
-                    onClick={() => void updateServiceWorker(true)}
-                  >
-                    Update now
-                  </PrimaryButton>
-                  <SecondaryButton className="!px-4 !py-2.5" onClick={() => setNeedRefresh(false)}>
-                    Later
-                  </SecondaryButton>
-                </div>
-              </div>
-            </div>
-          </div>
+      <Modal open={needRefresh} title="Update available" centered onClose={() => setNeedRefresh(false)}>
+        <div className="flex items-start gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-lavender-surface text-indigo-brand">
+            <RefreshCw size={18} />
+          </span>
+          <p>
+            A newer version of Serene is ready. Refresh to get the latest improvements.
+          </p>
         </div>
-      ) : null}
+        <div className="mt-4 flex gap-2">
+          <PrimaryButton className="!px-4 !py-2.5" onClick={() => void updateServiceWorker(true)}>
+            Update now
+          </PrimaryButton>
+          <SecondaryButton className="!px-4 !py-2.5" onClick={() => setNeedRefresh(false)}>
+            Later
+          </SecondaryButton>
+        </div>
+      </Modal>
 
       {installOpen && !isStandaloneApp() ? (
         <div className="fixed inset-x-0 bottom-0 z-[60] px-4 pb-[max(16px,env(safe-area-inset-bottom))]">
