@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppProvider } from "./context/AppProvider";
+import { PwaPrompts } from "./components/pwa/PwaPrompts";
 import { AppShell } from "./components/navigation/AppShell";
 import { SplashScreen } from "./screens/SplashScreen";
 import { OnboardingScreen } from "./screens/OnboardingScreen";
@@ -24,6 +25,7 @@ import {
 export default function App() {
   return (
     <AppProvider>
+      <PwaPrompts />
       <Routes>
         <Route path="/" element={<SplashScreen />} />
         <Route element={<AppShell />}>
