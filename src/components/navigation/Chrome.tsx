@@ -1,40 +1,44 @@
-import { Home, Leaf, MessageCircle, User, Users } from "lucide-react";
+import { Home, Orbit, Theater, User } from "lucide-react";
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 
 const ITEMS = [
   { to: "/app/home", label: "Home", icon: Home },
-  { to: "/app/companion", label: "Companion", icon: MessageCircle },
-  { to: "/app/mindfulness", label: "Mindfulness", icon: Leaf },
-  { to: "/app/journal", label: "Friends", icon: Users },
   { to: "/app/profile", label: "Profile", icon: User },
+  { to: "/app/mindfulness", label: "Mindfulness", icon: Orbit },
+  { to: "/app/journal", label: "Friends", icon: Theater },
 ];
 
 export function BottomNavigation() {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-4 pb-[max(12px,env(safe-area-inset-bottom))]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-6 pb-[max(14px,env(safe-area-inset-bottom))]"
     >
-      <div className="pointer-events-auto mx-auto flex max-w-md items-center justify-between rounded-nav border border-white/60 bg-[var(--nav-bg)] px-2 py-2 shadow-nav backdrop-blur-xl dark:border-line">
+      <div className="pointer-events-auto mx-auto flex max-w-[320px] items-center justify-between rounded-full border border-white/70 bg-white/75 px-5 py-3 shadow-[0_10px_40px_rgba(15,23,42,0.12)] backdrop-blur-xl dark:border-line dark:bg-[var(--nav-bg)]">
         {ITEMS.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
-            className={({ isActive }) =>
-              `flex min-w-[58px] flex-col items-center gap-0.5 rounded-full px-2.5 py-1.5 text-[11px] font-medium transition ${
-                isActive
-                  ? "bg-gradient-to-r from-indigo-brand/15 to-lavender/20 text-indigo-brand"
-                  : "text-ink-muted"
-              }`
-            }
+            aria-label={label}
+            title={label}
+            className="grid place-items-center"
           >
-            {({ isActive }) => (
-              <>
-                <Icon size={20} strokeWidth={isActive ? 2.15 : 1.7} aria-hidden />
-                <span>{label}</span>
-              </>
-            )}
+            {({ isActive }) =>
+              to === "/app/home" && isActive ? (
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-[#F43F5E] text-white shadow-[0_8px_20px_rgba(244,63,94,0.35)]">
+                  <Icon size={20} strokeWidth={2.2} aria-hidden />
+                </span>
+              ) : (
+                <span
+                  className={`grid h-11 w-11 place-items-center rounded-full transition ${
+                    isActive ? "bg-[#ECECF0] text-ink" : "text-[#9CA3AF]"
+                  }`}
+                >
+                  <Icon size={21} strokeWidth={isActive ? 2.1 : 1.8} aria-hidden />
+                </span>
+              )
+            }
           </NavLink>
         ))}
       </div>

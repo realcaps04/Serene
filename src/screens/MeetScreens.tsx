@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Screen } from "../components/navigation/AppShell";
 import { IconButton, PrimaryButton } from "../components/ui/Button";
-import { SereneCompanion } from "../components/brand/SereneCompanion";
+import { CloudMascot } from "../components/brand/CloudMascot";
 import { useApp } from "../context/app-context";
 
 export function CompanionIntroScreen() {
@@ -27,7 +27,7 @@ export function CompanionIntroScreen() {
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center py-6">
-        <SereneCompanion />
+        <CloudMascot size={200} animated />
       </div>
 
       <PrimaryButton full onClick={completeOnboarding} className="relative z-10">

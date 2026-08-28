@@ -1,7 +1,7 @@
 import { Mic, Send } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { SereneMark } from "../brand/Logo";
+import { CloudMascotAvatar } from "../brand/CloudMascot";
 
 export function AIMessage({ text }: { text: string }) {
   return (
@@ -11,9 +11,7 @@ export function AIMessage({ text }: { text: string }) {
       transition={{ duration: 0.45 }}
       className="flex items-end gap-2"
     >
-      <div className="mb-1 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white shadow-soft">
-        <SereneMark size={20} />
-      </div>
+      <CloudMascotAvatar size={38} />
       <div className="max-w-[82%] rounded-card bg-white px-4 py-3 text-body text-ink shadow-soft dark:bg-surface-card">
         {text.split("\n").map((line, i) => (
           <p key={i} className={i ? "mt-2" : ""}>
@@ -42,9 +40,7 @@ export function UserMessage({ text }: { text: string }) {
 export function TypingDots() {
   return (
     <div className="flex items-end gap-2" aria-label="Serene is thinking">
-      <div className="mb-1 grid h-8 w-8 place-items-center rounded-full bg-white shadow-soft">
-        <SereneMark size={20} />
-      </div>
+      <CloudMascotAvatar size={38} />
       <div className="flex gap-1 rounded-card bg-white px-4 py-3 shadow-soft">
         <span className="h-1.5 w-1.5 rounded-full bg-lavender animate-pulse-dot" />
         <span className="h-1.5 w-1.5 rounded-full bg-indigo-brand animate-pulse-dot [animation-delay:150ms]" />
