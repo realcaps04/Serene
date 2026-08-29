@@ -1,6 +1,5 @@
 import {
   Bell,
-  Check,
   ChevronRight,
   CircleHelp,
   Flame,
@@ -22,6 +21,7 @@ import { CloudMascot } from "../components/brand/CloudMascot";
 import { Screen } from "../components/navigation/AppShell";
 import { useApp } from "../context/app-context";
 import type { ScreenId } from "../lib/types";
+import verifiedBadge from "../assets/verified-badge.png";
 
 const PERSONALIZATION: MenuItem[] = [
   {
@@ -104,8 +104,8 @@ type MenuItem = {
 
 export function ProfileScreen() {
   const { name, googleUser, dayStreak, sessions, journalEntries, go, signOutGoogle, showToast } = useApp();
-  const firstName = name.trim().split(" ")[0] || "Alex";
-  const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+  const isLoggedIn = Boolean(googleUser);
+  const displayName = isLoggedIn ? formatFirstName(googleUser?.name ?? name) : "Partner";
 
   return (
     <Screen className="pb-2">
@@ -146,7 +146,7 @@ export function ProfileScreen() {
       <section className="relative z-[1] mb-6 rounded-[24px] bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.07)]">
         <div className="flex items-start gap-4">
           <div className="relative shrink-0">
-            <Avatar name={name} picture={googleUser?.picture} size={72} />
+            <Avatar name={displayName} picture={isLoggedIn ? googleUser?.picture : undefined} size={72} />
             <button
               type="button"
               onClick={() => go("profile-details")}
@@ -159,7 +159,7 @@ export function ProfileScreen() {
           <div className="min-w-0 flex-1 pt-1">
             <div className="flex flex-wrap items-center gap-2">
               <p className="font-display text-[20px] font-semibold text-[#1A203E]">{displayName}</p>
-              <VerifiedBadge />
+              {isLoggedIn ? <VerifiedBadge /> : null}
             </div>
             <p className="mt-0.5 text-[12px] text-[#9499A8]">Mindful since May 2024</p>
           </div>
@@ -232,19 +232,24 @@ export function ProfileScreen() {
   );
 }
 
+function formatFirstName(fullName: string) {
+  const first = fullName.trim().split(" ")[0] || "Partner";
+  return first.charAt(0).toUpperCase() + first.slice(1);
+}
+
 function VerifiedBadge() {
   return (
-    <span
-      className="relative inline-grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#3B82F6] via-[#5865F2] to-[#7C69EF] shadow-[0_3px_10px_rgba(88,101,242,0.4)] ring-2 ring-white"
+    <img
+      src={verifiedBadge}
+      alt=""
+      width={28}
+      height={28}
+      decoding="async"
+      draggable={false}
+      className="h-[28px] w-[28px] shrink-0 object-contain mix-blend-screen drop-shadow-[0_3px_8px_rgba(124,105,239,0.35)]"
       aria-label="Verified account"
       title="Verified Serene member"
-    >
-      <span
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-white/30 to-transparent"
-        aria-hidden
-      />
-      <Check size={12} strokeWidth={3} className="relative text-white" aria-hidden />
-    </span>
+    />
   );
 }
 
