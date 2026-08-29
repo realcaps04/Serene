@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Header } from "../components/navigation/Chrome";
-import { Screen } from "../components/navigation/AppShell";
+import { Screen, ScreenActions } from "../components/navigation/AppShell";
 import { IconButton, PrimaryButton } from "../components/ui/Button";
 import { GoalGlyph } from "../components/brand/GoalIcons";
 import { useApp } from "../context/app-context";
@@ -50,11 +50,11 @@ export function GoalsScreen() {
         })}
       </div>
 
-      <div className="mt-auto pt-6">
+      <ScreenActions>
         <PrimaryButton full onClick={() => go("mood")} disabled={goals.length === 0}>
           Continue
         </PrimaryButton>
-      </div>
+      </ScreenActions>
     </Screen>
   );
 }

@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import { Screen } from "../components/navigation/AppShell";
+import { Screen, ScreenActions } from "../components/navigation/AppShell";
 import { IconButton, PrimaryButton } from "../components/ui/Button";
 import { CloudMascot } from "../components/brand/CloudMascot";
 import { useApp } from "../context/app-context";
@@ -30,9 +30,11 @@ export function CompanionIntroScreen() {
         <CloudMascot size={200} animated />
       </div>
 
-      <PrimaryButton full onClick={completeOnboarding} className="relative z-10">
-        Meet Serene
-      </PrimaryButton>
+      <ScreenActions className="relative z-10">
+        <PrimaryButton full onClick={completeOnboarding}>
+          Meet Serene
+        </PrimaryButton>
+      </ScreenActions>
     </Screen>
   );
 }
@@ -55,14 +57,14 @@ export function SignInScreen() {
       <p className="mt-4 text-body text-ink-secondary">
         This preview keeps you signed in locally. No password is stored.
       </p>
-      <div className="mt-auto space-y-3 pt-8">
+      <ScreenActions className="space-y-3">
         <PrimaryButton full onClick={completeOnboarding}>
           Continue
         </PrimaryButton>
         <button type="button" className="w-full text-sm font-medium text-indigo-brand" onClick={() => go("welcome")}>
           Back
         </button>
-      </div>
+      </ScreenActions>
     </Screen>
   );
 }

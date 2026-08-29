@@ -1,8 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import { Header } from "../components/navigation/Chrome";
-import { Screen } from "../components/navigation/AppShell";
+import { Screen, ScreenActions } from "../components/navigation/AppShell";
 import { IconButton, PrimaryButton } from "../components/ui/Button";
 import { MoodCard } from "../components/mood/MoodSelector";
+import { MoodWheel } from "../components/mood/MoodWheel";
 import { useApp } from "../context/app-context";
 import { MOODS } from "../data/content";
 
@@ -40,17 +41,15 @@ export function MoodScreen() {
         ))}
       </div>
 
-      <div className="relative mt-8 text-center">
-        <div className="mx-auto h-16 w-56 overflow-hidden">
-          <div className="h-28 w-56 rounded-t-full bg-gradient-to-r from-lavender via-coral to-lavender opacity-80" />
-        </div>
+      <div className="relative mt-6 flex justify-center">
+        <MoodWheel selected={mood} />
       </div>
 
-      <div className="mt-auto pt-6">
+      <ScreenActions>
         <PrimaryButton full onClick={() => go("companion-intro")} disabled={!mood}>
           Continue
         </PrimaryButton>
-      </div>
+      </ScreenActions>
     </Screen>
   );
 }

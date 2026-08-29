@@ -1,48 +1,88 @@
 import { motion } from "framer-motion";
 import { Logo } from "../components/brand/Logo";
-import { PrimaryButton, SecondaryButton } from "../components/ui/Button";
-import { Screen } from "../components/navigation/AppShell";
+import { PrimaryButton } from "../components/ui/Button";
+import { Screen, ScreenActions } from "../components/navigation/AppShell";
 import { useApp } from "../context/app-context";
+
+function WelcomeLandscape() {
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 h-full w-full"
+      viewBox="0 0 390 844"
+      preserveAspectRatio="xMidYMid slice"
+      fill="none"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id="welcome-sky" x1="195" y1="0" x2="195" y2="520" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FFF5FA" />
+          <stop offset="45%" stopColor="#F5F3FF" />
+          <stop offset="100%" stopColor="#EDE9FE" />
+        </linearGradient>
+        <linearGradient id="welcome-water" x1="195" y1="560" x2="195" y2="844" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#DDD6FE" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#BFDBFE" stopOpacity="0.75" />
+        </linearGradient>
+      </defs>
+
+      <rect width="390" height="844" fill="url(#welcome-sky)" />
+
+      <ellipse cx="196" cy="318" rx="34" ry="34" fill="white" fillOpacity="0.88" />
+
+      <path
+        d="M0 360c52-28 98-42 156-34 58 8 104 4 156-18 52-22 78-10 78-10V520H0V360Z"
+        fill="#DDD6FE"
+        fillOpacity="0.95"
+      />
+      <path
+        d="M0 410c68-24 128-34 188-12 60 22 110 10 202-6v132H0V410Z"
+        fill="#C4B5FD"
+        fillOpacity="0.72"
+      />
+      <path
+        d="M0 470c74-18 142-10 204 10 62 20 118-6 186 4v360H0V470Z"
+        fill="#FBCFE8"
+        fillOpacity="0.82"
+      />
+      <path
+        d="M0 540c82-14 150-6 214 12 64 18 118-8 176 2v290H0V540Z"
+        fill="#A78BFA"
+        fillOpacity="0.28"
+      />
+
+      <rect x="0" y="560" width="390" height="284" fill="url(#welcome-water)" />
+      <path
+        d="M0 598c48 8 96 6 148-2 52-8 96-4 148 8 52 12 94 8 94 8v230H0V598Z"
+        fill="#FFFFFF"
+        fillOpacity="0.12"
+      />
+    </svg>
+  );
+}
 
 export function OnboardingScreen() {
   const { go, setName } = useApp();
 
   return (
-    <Screen className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[52%] bg-gradient-to-t from-lavender/30 via-pink-surface to-transparent" />
-      <svg
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[46%] w-full text-lavender"
-        viewBox="0 0 390 280"
-        fill="none"
-        aria-hidden
-      >
-        <ellipse cx="196" cy="70" rx="46" ry="46" fill="white" fillOpacity="0.7" />
-        <path d="M0 168c48-36 96-54 148-42 52 12 86 18 140-8 42-20 72-8 102 18v144H0V168Z" fill="#DDD6FE" />
-        <path d="M0 196c62-28 118-38 168-14 58 28 96 8 148-10 36-12 52 8 74 22v86H0V196Z" fill="#FBCFE8" fillOpacity="0.85" />
-        <path d="M0 228c70-18 130-8 188 8 50 14 90-10 202-4v48H0v-52Z" fill="#A78BFA" fillOpacity="0.35" />
-      </svg>
+    <Screen className="relative overflow-hidden !px-0">
+      <WelcomeLandscape />
 
-      <div className="relative z-10 flex flex-1 flex-col">
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col px-5">
         <motion.div
-          className="mt-8 flex flex-col items-center text-center"
+          className="flex flex-1 flex-col items-center justify-center pt-10 text-center"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Logo size={72} />
-          <h1 className="mt-5 font-display text-hero font-semibold text-[#1A203E]">Serene</h1>
-          <p className="mt-2 text-body font-medium text-[#1A203E]">
-            Mindfulness • AI Companion • Wellbeing
-          </p>
+          <Logo size={80} />
+          <h1 className="mt-5 font-display text-[2.35rem] font-semibold tracking-[-0.03em] text-[#1A203E]">
+            Serene
+          </h1>
+          <p className="mt-3 text-[0.98rem] font-medium text-[#1A203E]">Mindfulness • AI Companion</p>
+          <p className="mt-1 text-[0.92rem] font-normal text-ink-secondary">Wellbeing for everyone</p>
         </motion.div>
 
-        <div className="relative z-10 mt-auto space-y-3 pb-4 pt-8">
-          <h2 className="text-center font-display text-[1.65rem] font-semibold leading-snug text-ink">
-            Your mind deserves a calmer space.
-          </h2>
-          <p className="mx-auto max-w-sm text-center text-body text-ink-secondary">
-            Serene is your AI-powered companion for mindfulness, reflection, and everyday wellbeing.
-          </p>
+        <ScreenActions className="relative z-10 space-y-4">
           <PrimaryButton
             full
             onClick={() => {
@@ -52,17 +92,17 @@ export function OnboardingScreen() {
           >
             Get Started
           </PrimaryButton>
-          <SecondaryButton
-            full
+          <button
+            type="button"
+            className="w-full text-sm font-medium text-[#1A203E]"
             onClick={() => {
               setName("Alex");
               go("sign-in");
             }}
           >
             I already have an account
-          </SecondaryButton>
-          <p className="pt-1 text-center text-meta text-ink-muted">Private by design. Your data belongs to you.</p>
-        </div>
+          </button>
+        </ScreenActions>
       </div>
     </Screen>
   );

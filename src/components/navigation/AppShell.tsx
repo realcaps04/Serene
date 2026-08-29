@@ -38,8 +38,20 @@ export function Screen({
   className?: string;
 }) {
   return (
-    <div className={`flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-6 pt-[max(16px,env(safe-area-inset-top))] ${className}`}>
+    <div
+      className={`flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-[max(32px,calc(env(safe-area-inset-bottom)+20px))] pt-[max(16px,env(safe-area-inset-top))] ${className}`}
+    >
       {children}
     </div>
   );
+}
+
+export function ScreenActions({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={`mt-auto pt-8 pb-2 mb-10 ${className}`}>{children}</div>;
 }
