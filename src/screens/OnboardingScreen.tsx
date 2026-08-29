@@ -114,7 +114,7 @@ export function OnboardingScreen() {
     <Screen className="relative overflow-hidden !bg-[#F8F7FC] !px-0 !pb-0">
       <div className="relative flex min-h-0 flex-1 flex-col">
         {/* Hero */}
-        <div className="relative min-h-[46%] shrink-0">
+        <div className="relative min-h-[40%] max-h-[46vh] shrink-0">
           <WelcomeLandscape />
 
           <div className="absolute right-4 top-2 z-20">
@@ -141,7 +141,7 @@ export function OnboardingScreen() {
 
         {/* Bottom card */}
         <motion.div
-          className="relative z-20 -mt-6 flex min-h-0 flex-1 flex-col rounded-t-[32px] bg-white px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-7 shadow-[0_-8px_32px_rgba(88,101,242,0.08)]"
+          className="relative z-20 -mt-6 shrink-0 rounded-t-[32px] bg-white px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-7 shadow-[0_-8px_32px_rgba(88,101,242,0.08)]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.1, ease: "easeOut" }}
@@ -166,7 +166,7 @@ export function OnboardingScreen() {
             ))}
           </div>
 
-          <div className="mt-auto space-y-3 pt-8">
+          <div className="mt-5 space-y-3">
             <button
               type="button"
               onClick={() => {

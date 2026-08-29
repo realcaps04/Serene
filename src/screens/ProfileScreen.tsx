@@ -2,20 +2,27 @@ import {
   Bell,
   ChevronRight,
   CircleHelp,
+  Cloud,
   Flame,
   Flower2,
   Globe,
+  Lock,
   LogOut,
   NotebookPen,
   Pencil,
   PieChart,
   Settings,
   Shield,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Target,
+  Users,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { GoogleSignInButton } from "../components/auth/GoogleSignInButton";
 import { Avatar } from "../components/brand/Logo";
 import { CloudMascot } from "../components/brand/CloudMascot";
 import { Screen } from "../components/navigation/AppShell";
@@ -106,9 +113,15 @@ export function ProfileScreen() {
   const { name, googleUser, dayStreak, sessions, journalEntries, go, signOutGoogle, showToast } = useApp();
   const isLoggedIn = Boolean(googleUser);
   const displayName = isLoggedIn ? formatFirstName(googleUser?.name ?? name) : "Partner";
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  useEffect(() => {
+    setLoginOpen(!googleUser);
+  }, [googleUser]);
 
   return (
     <Screen className="pb-2">
+      <ProfileLoginModal open={loginOpen && !isLoggedIn} onClose={() => setLoginOpen(false)} />
       <header className="relative z-0 mb-5 min-h-[5.25rem] pt-1">
         <div
           className="pointer-events-none absolute right-0 top-0 z-0 h-[6.75rem] w-[6.75rem] overflow-hidden rounded-full opacity-95"
@@ -193,19 +206,21 @@ export function ProfileScreen() {
 
       <MenuSection title="Account & Privacy" items={ACCOUNT} onNavigate={go} onLanguage={() => showToast("English is available in this preview.")} />
 
-      <button
-        type="button"
-        onClick={signOutGoogle}
-        className="mb-4 flex w-full items-center gap-3 rounded-[20px] border border-[#FECDD3] bg-[#FFF1F2] px-4 py-3.5 text-left transition-colors hover:bg-[#FFE4E6]"
-      >
-        <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-crisis shadow-sm">
-          <LogOut size={18} strokeWidth={1.85} />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-[14px] font-semibold text-crisis">Log out</span>
-          <span className="block text-[11px] text-[#F87171]">Sign out of your Serene account</span>
-        </span>
-      </button>
+      {isLoggedIn ? (
+        <button
+          type="button"
+          onClick={signOutGoogle}
+          className="mb-4 flex w-full items-center gap-3 rounded-[20px] border border-[#FECDD3] bg-[#FFF1F2] px-4 py-3.5 text-left transition-colors hover:bg-[#FFE4E6]"
+        >
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-crisis shadow-sm">
+            <LogOut size={18} strokeWidth={1.85} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14px] font-semibold text-crisis">Log out</span>
+            <span className="block text-[11px] text-[#F87171]">Sign out of your Serene account</span>
+          </span>
+        </button>
+      ) : null}
 
       <section className="relative overflow-hidden rounded-[22px] bg-gradient-to-r from-[#EDE9FE] via-[#F3E8FF] to-[#DBEAFE] p-4 shadow-[0_6px_20px_rgba(124,105,239,0.12)]">
         <div className="flex items-center gap-3">
@@ -229,6 +244,160 @@ export function ProfileScreen() {
         </div>
       </section>
     </Screen>
+  );
+}
+
+function ProfileLoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-[60] grid place-items-center p-4">
+      <button
+        type="button"
+        className="absolute inset-0 bg-[#1A203E]/45 backdrop-blur-[6px]"
+        aria-label="Close login prompt"
+        onClick={onClose}
+      />
+      <div
+        role="dialog"
+        aria-modal
+        aria-labelledby="profile-login-title"
+        className="relative max-h-[min(92dvh,720px)] w-full max-w-[360px] overflow-y-auto rounded-[28px] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.2)]"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-4 top-4 z-20 grid h-9 w-9 place-items-center rounded-full bg-[#F4F4F6] text-[#9499A8] transition hover:bg-[#EDE9FE] hover:text-[#7C69EF]"
+        >
+          <X size={18} strokeWidth={2} />
+        </button>
+
+        <ProfileLoginHero />
+
+        <div className="px-6 pb-6 pt-2 text-center">
+          <h2 id="profile-login-title" className="font-display text-[22px] font-semibold leading-tight text-[#1A203E]">
+            Sign in to your profile
+          </h2>
+          <p className="mx-auto mt-2 max-w-[280px] text-[12px] leading-relaxed text-[#9499A8]">
+            Connect with Google to save your name, photo, and unlock your verified badge across all your devices.
+          </p>
+
+          <div className="mt-5 grid grid-cols-3 gap-2">
+            <LoginFeature
+              icon={ShieldCheck}
+              iconBg="bg-[#EDE9FE]"
+              iconColor="text-[#7C69EF]"
+              title="Secure & Private"
+              subtitle="Your data is safe with us"
+            />
+            <LoginFeature
+              icon={Cloud}
+              iconBg="bg-[#EDE9FE]"
+              iconColor="text-[#8B5CF6]"
+              title="Sync Everywhere"
+              subtitle="Access your journey on any device"
+            />
+            <LoginFeature
+              icon={Sparkles}
+              iconBg="bg-[#FCE7F3]"
+              iconColor="text-[#EC4899]"
+              title="Verified You"
+              subtitle="Get your verified badge"
+            />
+          </div>
+
+          <div className="mt-6 space-y-3">
+            <GoogleSignInButton
+              label="Sign in with Google"
+              showChevron
+              onSignedIn={onClose}
+              className="rounded-[18px] border-[#E8EAF2] py-4 shadow-[0_4px_14px_rgba(15,23,42,0.05)]"
+            />
+
+            <div className="flex items-center gap-3 py-0.5">
+              <span className="h-px flex-1 bg-[#EEF0F5]" />
+              <span className="text-[12px] font-medium text-[#9499A8]">or</span>
+              <span className="h-px flex-1 bg-[#EEF0F5]" />
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="pressable flex w-full items-center justify-between rounded-[18px] bg-[#EDE9FE] px-5 py-4 text-left shadow-[0_4px_14px_rgba(124,105,239,0.12)] transition hover:bg-[#DDD6FE]"
+            >
+              <span className="inline-flex items-center gap-3">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/80 text-[#7C69EF]">
+                  <Users size={18} strokeWidth={2} aria-hidden />
+                </span>
+                <span className="text-[14px] font-semibold text-[#1A203E]">Continue as Partner</span>
+              </span>
+              <ChevronRight size={18} className="text-[#9499A8]" aria-hidden />
+            </button>
+          </div>
+
+          <p className="mx-auto mt-5 flex max-w-[280px] items-start justify-center gap-1.5 text-[10px] leading-relaxed text-[#9499A8]">
+            <Lock size={12} className="mt-0.5 shrink-0 text-[#7C69EF]" strokeWidth={2} aria-hidden />
+            <span>We never post without your permission. You&apos;re always in control.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProfileLoginHero() {
+  return (
+    <div className="relative overflow-hidden px-6 pb-2 pt-10">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#F5F3FF] via-[#FAFAFE] to-white" aria-hidden />
+      <div className="pointer-events-none absolute left-1/2 top-8 h-36 w-36 -translate-x-1/2 rounded-full bg-[#EDE9FE]/80 blur-2xl" aria-hidden />
+      <Sparkles size={14} className="pointer-events-none absolute left-8 top-12 text-[#C4B5FD]/70" aria-hidden />
+      <Sparkles size={11} className="pointer-events-none absolute right-10 top-16 text-[#F9A8D4]/80" aria-hidden />
+
+      <div className="relative mx-auto flex h-[120px] max-w-[260px] items-end justify-center gap-3">
+        <svg viewBox="0 0 40 56" className="absolute bottom-2 left-6 h-14 w-10 text-[#C4B5FD]/45" aria-hidden>
+          <path fill="currentColor" d="M20 4c-6 8-10 16-10 24 0 6 4 12 10 16 6-4 10-10 10-16 0-8-4-16-10-24Z" />
+        </svg>
+        <svg viewBox="0 0 40 56" className="absolute bottom-0 right-8 h-16 w-10 text-[#F9A8D4]/40" aria-hidden>
+          <path fill="currentColor" d="M20 4c-6 8-10 16-10 24 0 6 4 12 10 16 6-4 10-10 10-16 0-8-4-16-10-24Z" />
+        </svg>
+
+        <CloudMascot size={88} animated className="relative z-10 -mr-2 drop-shadow-[0_10px_24px_rgba(147,197,253,0.35)]" />
+        <img
+          src={verifiedBadge}
+          alt=""
+          width={52}
+          height={52}
+          draggable={false}
+          className="relative z-10 mb-3 h-[52px] w-[52px] object-contain mix-blend-screen drop-shadow-[0_6px_16px_rgba(124,105,239,0.35)]"
+          aria-hidden
+        />
+      </div>
+    </div>
+  );
+}
+
+function LoginFeature({
+  icon: Icon,
+  iconBg,
+  iconColor,
+  title,
+  subtitle,
+}: {
+  icon: LucideIcon;
+  iconBg: string;
+  iconColor: string;
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <div className="flex flex-col items-center px-1 text-center">
+      <span className={`grid h-10 w-10 place-items-center rounded-full ${iconBg}`}>
+        <Icon size={18} className={iconColor} strokeWidth={2} aria-hidden />
+      </span>
+      <p className="mt-2 text-[10px] font-semibold leading-tight text-[#1A203E]">{title}</p>
+      <p className="mt-1 text-[9px] leading-snug text-[#9499A8]">{subtitle}</p>
+    </div>
   );
 }
 
