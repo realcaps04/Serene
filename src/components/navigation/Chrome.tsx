@@ -1,42 +1,33 @@
 import { Home, Orbit, Theater, User } from "lucide-react";
+import { LayoutGroup, motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 
 const ITEMS = [
-  { to: "/app/mindfulness", label: "Mindfulness", icon: Orbit },
   { to: "/app/home", label: "Home", icon: Home },
-  { to: "/app/profile", label: "Profile", icon: User },
+  { to: "/app/mindfulness", label: "Mindfulness", icon: Orbit },
   { to: "/app/journal", label: "Friends", icon: Theater },
+  { to: "/app/profile", label: "Profile", icon: User },
 ];
 
-function NavIcon({
-  active,
-  home,
-  children,
-}: {
-  active: boolean;
-  home?: boolean;
-  children: ReactNode;
-}) {
-  if (active && home) {
-    return (
-      <span className="grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full bg-white text-pink-premium shadow-[0_8px_24px_rgba(15,23,42,0.12)] ring-1 ring-white/80">
-        {children}
-      </span>
-    );
-  }
+const NAV_SPRING = { type: "spring" as const, stiffness: 420, damping: 34, mass: 0.75 };
 
-  if (active) {
-    return (
-      <span className="grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full bg-pink-premium/12 text-pink-premium shadow-[0_6px_18px_rgba(244,114,182,0.22)]">
-        {children}
-      </span>
-    );
-  }
-
+function NavIcon({ active, children }: { active: boolean; children: ReactNode }) {
   return (
-    <span className="grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full text-[#A8ADB8] transition-colors hover:text-[#8B919C]">
-      {children}
+    <span className="relative grid h-[3.25rem] w-[3.25rem] place-items-center">
+      <span className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(15,23,42,0.07)]" />
+      {active ? (
+        <motion.span
+          layoutId="nav-active-pill"
+          className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-premium via-[#f43f7e] to-coral shadow-[0_8px_28px_rgba(244,114,182,0.45)]"
+          transition={NAV_SPRING}
+        />
+      ) : null}
+      <span
+        className={`relative z-10 transition-colors duration-300 ${active ? "text-white" : "text-[#5A6070]"}`}
+      >
+        {children}
+      </span>
     </span>
   );
 }
@@ -45,19 +36,21 @@ export function BottomNavigation() {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-5 pb-[max(16px,env(safe-area-inset-bottom))]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-5 pb-[max(12px,env(safe-area-inset-bottom))]"
     >
-      <div className="pointer-events-auto mx-auto flex max-w-[340px] items-center justify-between rounded-[999px] border border-white/80 bg-white/55 px-5 py-2.5 shadow-[0_16px_48px_rgba(15,23,42,0.14)] backdrop-blur-2xl dark:border-white/10 dark:bg-[rgba(28,28,32,0.72)]">
-        {ITEMS.map(({ to, label, icon: Icon }) => (
-          <NavLink key={to} to={to} aria-label={label} title={label} className="grid place-items-center">
-            {({ isActive }) => (
-              <NavIcon active={isActive} home={to === "/app/home"}>
-                <Icon size={22} strokeWidth={isActive ? 2.2 : 1.85} aria-hidden />
-              </NavIcon>
-            )}
-          </NavLink>
-        ))}
-      </div>
+      <LayoutGroup id="bottom-nav">
+        <div className="glass-nav pointer-events-auto mx-auto flex max-w-[340px] items-center justify-between rounded-[999px] px-5 py-2.5">
+          {ITEMS.map(({ to, label, icon: Icon }) => (
+            <NavLink key={to} to={to} aria-label={label} title={label} className="grid place-items-center">
+              {({ isActive }) => (
+                <NavIcon active={isActive}>
+                  <Icon size={22} strokeWidth={isActive ? 2.35 : 1.9} aria-hidden />
+                </NavIcon>
+              )}
+            </NavLink>
+          ))}
+        </div>
+      </LayoutGroup>
     </nav>
   );
 }

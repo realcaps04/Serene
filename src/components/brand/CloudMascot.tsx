@@ -39,10 +39,36 @@ export function CloudMascot({
   );
 }
 
-export function CloudMascotAvatar({ size = 36 }: { size?: number }) {
+export function CloudMascotAvatar({
+  size = 36,
+  accentColor = "#60A5FA",
+}: {
+  size?: number;
+  accentColor?: string;
+}) {
+  const shell = Math.round(size * 1.15);
   return (
-    <div className="mb-1 shrink-0" style={{ width: size, height: size }}>
-      <CloudMascot size={size} title="Serene companion" />
+    <div className="mb-1 shrink-0" style={{ width: shell, height: shell }}>
+      <span
+        className="relative grid h-full w-full place-items-center rounded-full"
+        style={{
+          background: `radial-gradient(circle at 35% 30%, ${accentColor}ee 0%, ${accentColor} 55%, ${accentColor}cc 100%)`,
+          boxShadow: `0 8px 18px ${accentColor}44`,
+        }}
+      >
+        <span
+          className="absolute inset-[2px] rounded-full"
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.06) 100%)",
+          }}
+        />
+        <CloudMascot
+          size={Math.round(size * 0.88)}
+          title="Serene companion"
+          className="relative drop-shadow-[0_4px_10px_rgba(15,23,42,0.12)]"
+        />
+      </span>
     </div>
   );
 }

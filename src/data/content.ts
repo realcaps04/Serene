@@ -33,6 +33,82 @@ export const QUICK_PROMPTS = [
   "Let's meditate",
 ];
 
+export type WorryStarter = {
+  id: string;
+  title: string;
+  subtitle: string;
+  prompt: string;
+  color: string;
+  icon: "leaf" | "cloud" | "help" | "heart" | "pen" | "wind" | "list" | "moon";
+};
+
+export const WORRY_STARTERS: WorryStarter[] = [
+  {
+    id: "act",
+    title: "Act on it",
+    subtitle: "Actionable Things List",
+    prompt: "I want to act on a worry",
+    color: "#60A5FA",
+    icon: "leaf",
+  },
+  {
+    id: "release",
+    title: "Let it go",
+    subtitle: "Things to Release",
+    prompt: "Help me let something go",
+    color: "#FB923C",
+    icon: "cloud",
+  },
+  {
+    id: "unsure",
+    title: "Not sure",
+    subtitle: "Help me sort it out",
+    prompt: "I'm not sure how to handle this worry",
+    color: "#A78BFA",
+    icon: "help",
+  },
+  {
+    id: "sit",
+    title: "Sit with it",
+    subtitle: "Pause & Reflect",
+    prompt: "I want to sit with this feeling for a moment",
+    color: "#34D399",
+    icon: "heart",
+  },
+  {
+    id: "journal",
+    title: "Write it down",
+    subtitle: "Journal Entry",
+    prompt: "Help me write this worry down",
+    color: "#818CF8",
+    icon: "pen",
+  },
+  {
+    id: "breathe",
+    title: "Breathe first",
+    subtitle: "Calm Before Sorting",
+    prompt: "I need to calm down before sorting this worry",
+    color: "#38BDF8",
+    icon: "wind",
+  },
+  {
+    id: "plan",
+    title: "Make a plan",
+    subtitle: "Small Next Steps",
+    prompt: "Help me make a small plan for this worry",
+    color: "#F472B6",
+    icon: "list",
+  },
+  {
+    id: "rest",
+    title: "Sleep on it",
+    subtitle: "Rest Before Deciding",
+    prompt: "I think I should rest before deciding on this",
+    color: "#C084FC",
+    icon: "moon",
+  },
+];
+
 export const JOURNAL_PROMPTS = [
   "What's on your mind today?",
   "What felt heavy, and what felt light?",

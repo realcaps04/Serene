@@ -41,7 +41,7 @@ export function GoogleSignInButton({
       }
     },
     onError: () => {
-      showToast("Google sign-in was cancelled.");
+      showToast(`Google origin not allowed. Add ${window.location.origin} in Cloud Console.`);
     },
   });
 

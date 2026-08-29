@@ -35,10 +35,10 @@ export default function App() {
           <Route path="/meet" element={<CompanionIntroScreen />} />
           <Route path="/sign-in" element={<SignInScreen />} />
           <Route path="/app/breathing" element={<BreathingScreen />} />
+          <Route path="/app/companion" element={<CompanionScreen />} />
         </Route>
         <Route element={<AppShell withNav />}>
           <Route path="/app/home" element={<HomeScreen />} />
-          <Route path="/app/companion" element={<CompanionScreen />} />
           <Route path="/app/mindfulness" element={<MindfulnessScreen />} />
           <Route path="/app/journal" element={<JournalListScreen />} />
           <Route path="/app/journal/new" element={<JournalEditorScreen />} />

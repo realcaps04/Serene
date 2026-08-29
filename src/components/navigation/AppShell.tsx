@@ -9,8 +9,8 @@ export function AppShell({ withNav = false }: { withNav?: boolean }) {
   const location = useLocation();
 
   return (
-    <div className="min-h-dvh wellness-bg md:py-6">
-      <div className="relative mx-auto flex h-dvh w-full max-w-shell flex-col overflow-hidden md:h-[min(100dvh-48px,920px)] md:rounded-[32px] md:border md:border-white/70 md:shadow-lift">
+    <div className="min-h-dvh bg-[#F4F4F6] md:py-6 md:wellness-bg">
+      <div className="relative mx-auto flex h-dvh w-full max-w-shell flex-col overflow-hidden bg-[#F4F4F6] md:h-[min(100dvh-48px,920px)] md:rounded-[32px] md:border md:border-white/70 md:shadow-lift dark:bg-surface-secondary">
         <Toast message={toast} />
         <AnimatePresence mode="wait">
           <motion.div
@@ -19,7 +19,7 @@ export function AppShell({ withNav = false }: { withNav?: boolean }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className={`flex h-full min-h-0 flex-1 flex-col overflow-hidden ${withNav ? "pb-28" : ""}`}
+            className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[#F4F4F6] dark:bg-surface-secondary"
           >
             <Outlet />
           </motion.div>

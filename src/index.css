@@ -93,6 +93,24 @@ textarea:focus-visible,
   display: none;
 }
 
+.glass-nav {
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 12px 40px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.dark .glass-nav {
+  background: rgba(30, 26, 56, 0.55);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
 .pressable {
   transition: transform 220ms ease, box-shadow 220ms ease;
 }

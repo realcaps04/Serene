@@ -52,7 +52,8 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: "m1",
     role: "ai",
-    text: "Hi Partner, I'm Serene.\nHow are you feeling right now?",
+    text: "Hi Partner, I'm Serene. I'm here to help you sort through worries using the Worry Tree.\n\nWe can decide what needs action, what to release, and what to sit with for now.\n\nHow are you feeling right now?",
+    createdAt: new Date().toISOString(),
   },
 ];
 
@@ -149,7 +150,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     (text: string) => {
       const trimmed = text.trim();
       if (!trimmed) return;
-      const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", text: trimmed };
+      const now = new Date().toISOString();
+      const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", text: trimmed, createdAt: now };
       setMessages((prev) => [...prev, userMsg]);
       setTyping(true);
       window.setTimeout(() => {
@@ -157,6 +159,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           id: crypto.randomUUID(),
           role: "ai",
           text: replyTo(trimmed, name, settings.aiPersonality),
+          createdAt: new Date().toISOString(),
         };
         setMessages((prev) => [...prev, reply]);
         setTyping(false);
