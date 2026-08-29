@@ -26,6 +26,7 @@ export interface AppState {
   mindfulnessMinutes: number;
   sessions: number;
   dayStreak: number;
+  userCreatedAt: number | null;
 }
 
 export interface AppContextValue extends AppState {

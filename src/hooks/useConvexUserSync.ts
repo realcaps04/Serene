@@ -28,6 +28,7 @@ export interface ConvexHydration {
   mindfulnessMinutes: number;
   sessions: number;
   dayStreak: number;
+  userCreatedAt: number | null;
 }
 
 interface SyncSnapshot {
@@ -124,6 +125,7 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
       mindfulnessMinutes: stats.mindfulnessMinutes,
       sessions: stats.sessions,
       dayStreak: stats.dayStreak,
+      userCreatedAt: user.createdAt,
     });
 
     if (user.settings.darkMode) {

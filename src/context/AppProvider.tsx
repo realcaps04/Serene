@@ -123,6 +123,7 @@ type HydrationPayload = {
   mindfulnessMinutes: number;
   sessions: number;
   dayStreak: number;
+  userCreatedAt: number | null;
 };
 
 function buildSyncSnapshot(args: {
@@ -211,6 +212,7 @@ function AppProviderInner({
   const [mindfulnessMinutes, setMindfulnessMinutes] = useState(0);
   const [sessions, setSessions] = useState(0);
   const [dayStreak, setDayStreak] = useState(0);
+  const [userCreatedAt, setUserCreatedAt] = useState<number | null>(null);
 
   const onHydrate = useCallback((data: HydrationPayload) => {
     setNameState(data.name);
@@ -225,6 +227,7 @@ function AppProviderInner({
     setMindfulnessMinutes(data.mindfulnessMinutes);
     setSessions(data.sessions);
     setDayStreak(data.dayStreak);
+    setUserCreatedAt(data.userCreatedAt);
     if (data.onboardingComplete) markOnboardingComplete();
     saveStoredName(data.name);
   }, []);
@@ -403,6 +406,7 @@ function AppProviderInner({
     clearSession();
     setOnboardingComplete(false);
     setNameState("Partner");
+    setUserCreatedAt(null);
     showToast("Signed out.");
     go("welcome", { replace: true });
   }, [go, setGoogleUser, showToast]);
@@ -432,6 +436,7 @@ function AppProviderInner({
       mindfulnessMinutes,
       sessions,
       dayStreak,
+      userCreatedAt,
       go,
       setName,
       toggleGoal,
@@ -471,6 +476,7 @@ function AppProviderInner({
       mindfulnessMinutes,
       sessions,
       dayStreak,
+      userCreatedAt,
       go,
       setName,
       toggleGoal,

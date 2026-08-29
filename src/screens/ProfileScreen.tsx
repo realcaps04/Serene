@@ -110,7 +110,7 @@ type MenuItem = {
 };
 
 export function ProfileScreen() {
-  const { name, googleUser, dayStreak, sessions, journalEntries, go, signOutGoogle, showToast } = useApp();
+  const { name, googleUser, dayStreak, sessions, journalEntries, userCreatedAt, go, signOutGoogle, showToast } = useApp();
   const isLoggedIn = Boolean(googleUser);
   const displayName = isLoggedIn ? formatFirstName(googleUser?.name ?? name) : "Partner";
   const [loginOpen, setLoginOpen] = useState(false);
@@ -174,20 +174,22 @@ export function ProfileScreen() {
               <p className="font-display text-[20px] font-semibold text-[#1A203E]">{displayName}</p>
               {isLoggedIn ? <VerifiedBadge size={36} /> : null}
             </div>
-            <p className="mt-0.5 text-[12px] text-[#9499A8]">Mindful since May 2024</p>
+            {userCreatedAt ? (
+              <p className="mt-0.5 text-[12px] text-[#9499A8]">{formatMindfulSince(userCreatedAt)}</p>
+            ) : null}
           </div>
         </div>
 
-        <blockquote className="relative mx-auto mt-5 max-w-[280px] text-center">
-          <span className="absolute -left-1 -top-3 font-display text-[28px] leading-none text-[#DDD6FE]" aria-hidden>
-            &ldquo;
-          </span>
-          <p className="px-4 text-[13px] italic leading-relaxed text-[#9499A8]">
+        <blockquote className="mt-5 overflow-x-auto text-center [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <p className="whitespace-nowrap text-[11px] italic text-[#9499A8] sm:text-[12px]">
+            <span className="font-display text-[#DDD6FE]" aria-hidden>
+              &ldquo;
+            </span>
             Small steps every day create big changes.
+            <span className="font-display text-[#DDD6FE]" aria-hidden>
+              &rdquo;
+            </span>
           </p>
-          <span className="absolute -bottom-4 right-0 font-display text-[28px] leading-none text-[#DDD6FE]" aria-hidden>
-            &rdquo;
-          </span>
         </blockquote>
 
         <div className="mt-6 grid grid-cols-3 divide-x divide-[#EEF0F6]">
@@ -396,6 +398,13 @@ function LoginFeature({
 function formatFirstName(fullName: string) {
   const first = fullName.trim().split(" ")[0] || "Partner";
   return first.charAt(0).toUpperCase() + first.slice(1);
+}
+
+function formatMindfulSince(createdAt: number) {
+  const date = new Date(createdAt);
+  const month = date.toLocaleDateString(undefined, { month: "long" });
+  const year = date.getFullYear();
+  return `Mindful since ${month} ${year}`;
 }
 
 function ProfileStat({
