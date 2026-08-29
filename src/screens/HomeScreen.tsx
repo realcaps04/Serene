@@ -120,7 +120,7 @@ export function HomeScreen() {
   const { name, googleUser, go } = useApp();
 
   return (
-    <Screen className="relative overflow-y-auto !pb-[calc(6.5rem+env(safe-area-inset-bottom))]">
+    <Screen className="relative overflow-y-auto !pb-[calc(8rem+env(safe-area-inset-bottom))]">
       <div className="mb-5 flex items-center justify-between">
         <button type="button" onClick={() => go("profile")} aria-label="Open profile">
           <Avatar name={name} picture={googleUser?.picture} size={44} />
@@ -159,7 +159,7 @@ export function HomeScreen() {
         ))}
       </div>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(12rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-shell">
+      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(13.5rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-shell">
         <button
           type="button"
           onClick={() => go("companion")}

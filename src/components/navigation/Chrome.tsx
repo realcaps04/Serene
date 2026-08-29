@@ -36,7 +36,7 @@ export function BottomNavigation() {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-5 pb-[max(12px,env(safe-area-inset-bottom))]"
+      className="pointer-events-none absolute inset-x-0 bottom-6 z-30 px-5 pb-[max(12px,env(safe-area-inset-bottom))]"
     >
       <LayoutGroup id="bottom-nav">
         <div className="glass-nav pointer-events-auto mx-auto flex max-w-[340px] items-center justify-between rounded-[999px] px-5 py-2.5">
