@@ -11,6 +11,13 @@
   --text-muted: #94a3b8;
   --border-subtle: #ede9fe;
   --nav-bg: rgba(255, 255, 255, 0.82);
+  --nav-bottom-gap: 1rem;
+  --nav-bar-height: 5.75rem;
+  --nav-stack-offset: calc(var(--nav-bottom-gap) + env(safe-area-inset-bottom));
+  --nav-content-clearance: calc(
+    var(--nav-bottom-gap) + var(--nav-bar-height) + env(safe-area-inset-bottom) + 0.75rem
+  );
+  --home-mascot-offset: calc(var(--nav-stack-offset) + var(--nav-bar-height) + 8rem);
   color-scheme: light;
 }
 
@@ -101,6 +108,10 @@ textarea:focus-visible,
   box-shadow:
     0 12px 40px rgba(15, 23, 42, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.shell-nav {
+  bottom: var(--nav-stack-offset);
 }
 
 .dark .glass-nav {

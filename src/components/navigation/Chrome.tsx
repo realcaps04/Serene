@@ -1,56 +1,49 @@
-import { Home, Orbit, Theater, User } from "lucide-react";
-import { LayoutGroup, motion } from "framer-motion";
-import type { ReactNode } from "react";
+import { BookOpen, Home, MessageCircle, Orbit, User } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
-const ITEMS = [
+const ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
   { to: "/app/home", label: "Home", icon: Home },
+  { to: "/app/companion", label: "Companion", icon: MessageCircle },
   { to: "/app/mindfulness", label: "Mindfulness", icon: Orbit },
-  { to: "/app/journal", label: "Friends", icon: Theater },
+  { to: "/app/journal", label: "Journal", icon: BookOpen },
   { to: "/app/profile", label: "Profile", icon: User },
 ];
 
-const NAV_SPRING = { type: "spring" as const, stiffness: 420, damping: 34, mass: 0.75 };
-
-function NavIcon({ active, children }: { active: boolean; children: ReactNode }) {
-  return (
-    <span className="relative grid h-[3.25rem] w-[3.25rem] place-items-center">
-      <span className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(15,23,42,0.07)]" />
-      {active ? (
-        <motion.span
-          layoutId="nav-active-pill"
-          className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-premium via-[#f43f7e] to-coral shadow-[0_8px_28px_rgba(244,114,182,0.45)]"
-          transition={NAV_SPRING}
-        />
-      ) : null}
-      <span
-        className={`relative z-10 transition-colors duration-300 ${active ? "text-white" : "text-[#5A6070]"}`}
-      >
-        {children}
-      </span>
-    </span>
-  );
-}
-
 export function BottomNavigation() {
   return (
-    <nav
-      aria-label="Primary"
-      className="pointer-events-none absolute inset-x-0 bottom-6 z-30 px-5 pb-[max(12px,env(safe-area-inset-bottom))]"
-    >
-      <LayoutGroup id="bottom-nav">
-        <div className="glass-nav pointer-events-auto mx-auto flex max-w-[340px] items-center justify-between rounded-[999px] px-5 py-2.5">
+    <nav aria-label="Primary" className="shell-nav pointer-events-none fixed inset-x-0 z-30 md:absolute">
+      <div className="mx-auto w-full max-w-shell px-4">
+        <div className="pointer-events-auto mx-auto flex max-w-[390px] items-stretch justify-between rounded-[22px] bg-white px-2 py-2 shadow-[0_8px_28px_rgba(15,23,42,0.1)]">
           {ITEMS.map(({ to, label, icon: Icon }) => (
-            <NavLink key={to} to={to} aria-label={label} title={label} className="grid place-items-center">
+            <NavLink
+              key={to}
+              to={to}
+              aria-label={label}
+              title={label}
+              className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1"
+            >
               {({ isActive }) => (
-                <NavIcon active={isActive}>
-                  <Icon size={22} strokeWidth={isActive ? 2.35 : 1.9} aria-hidden />
-                </NavIcon>
+                <>
+                  <Icon
+                    size={21}
+                    strokeWidth={isActive ? 2.35 : 1.85}
+                    className={`transition-colors ${isActive ? "text-indigo-brand" : "text-[#9499A8]"}`}
+                    aria-hidden
+                  />
+                  <span
+                    className={`max-w-full truncate text-[10px] font-semibold transition-colors ${
+                      isActive ? "text-indigo-brand" : "text-[#9499A8]"
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </>
               )}
             </NavLink>
           ))}
         </div>
-      </LayoutGroup>
+      </div>
     </nav>
   );
 }
@@ -64,8 +57,8 @@ export function Header({
 }: {
   title: string;
   subtitle?: string;
-  left?: ReactNode;
-  right?: ReactNode;
+  left?: React.ReactNode;
+  right?: React.ReactNode;
   align?: "left" | "center";
 }) {
   const hasBar = Boolean(left || right || align === "center");

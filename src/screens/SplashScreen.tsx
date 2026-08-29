@@ -2,19 +2,28 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { BrandLockup } from "../components/brand/Logo";
 import { useApp } from "../context/app-context";
+import { hasActiveSession } from "../lib/session";
 
 export function SplashScreen() {
   const { go } = useApp();
   const advanced = useRef(false);
 
-  const continueToWelcome = () => {
+  const continueFromSplash = () => {
     if (advanced.current) return;
     advanced.current = true;
+    if (hasActiveSession()) {
+      go("home", { replace: true });
+      return;
+    }
     go("welcome", { replace: true });
   };
 
   useEffect(() => {
-    const id = window.setTimeout(continueToWelcome, 2400);
+    if (hasActiveSession()) {
+      continueFromSplash();
+      return;
+    }
+    const id = window.setTimeout(continueFromSplash, 2400);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -22,7 +31,7 @@ export function SplashScreen() {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#F8F8FC]">
       <button
         type="button"
-        onClick={continueToWelcome}
+        onClick={continueFromSplash}
         className="flex h-full w-full items-center justify-center focus-visible:outline-none"
         aria-label="Serene. Mindfulness, AI Companion, Wellbeing. Continue."
       >

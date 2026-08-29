@@ -159,7 +159,7 @@ export function HomeScreen() {
         ))}
       </div>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(13.5rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-shell">
+      <div className="pointer-events-none fixed inset-x-0 bottom-[var(--home-mascot-offset)] z-40 mx-auto max-w-shell md:absolute">
         <button
           type="button"
           onClick={() => go("companion")}

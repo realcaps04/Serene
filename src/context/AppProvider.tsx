@@ -11,10 +11,16 @@ import type {
   ScreenId,
 } from "../lib/types";
 import { replyTo } from "../lib/companion";
-import { clearGoogleAuth, loadGoogleAuth, saveGoogleAuth } from "../lib/google-auth";
+import {
+  clearSession,
+  hasActiveSession,
+  loadGoogleAuth,
+  loadStoredName,
+  markOnboardingComplete,
+  persistGoogleSession,
+  saveStoredName,
+} from "../lib/session";
 import { WORRY_STARTERS } from "../data/content";
-
-const ONBOARDING_KEY = "serene-onboarding-complete";
 
 const ROUTES: Record<ScreenId, string> = {
   splash: "/",
@@ -86,7 +92,7 @@ const INITIAL_ENTRIES: JournalEntry[] = [
 export function AppProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const savedGoogle = loadGoogleAuth();
-  const [name, setName] = useState(savedGoogle?.name ?? "Partner");
+  const [name, setNameState] = useState(() => loadStoredName(savedGoogle?.name ?? "Partner"));
   const [googleUser, setGoogleUser] = useState<GoogleProfile | null>(savedGoogle);
   const [goals, setGoals] = useState<GoalId[]>([]);
   const [mood, setMoodState] = useState<MoodId | null>(null);
@@ -98,9 +104,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [typing, setTyping] = useState(false);
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
   const [toast, setToast] = useState<string | null>(null);
-  const [onboardingComplete, setOnboardingComplete] = useState(
-    () => localStorage.getItem(ONBOARDING_KEY) === "1",
-  );
+  const [onboardingComplete, setOnboardingComplete] = useState(() => hasActiveSession());
+
+  const setName = useCallback((next: string) => {
+    const trimmed = next.trim() || "Partner";
+    setNameState(trimmed);
+    saveStoredName(trimmed);
+  }, []);
   const [mindfulnessMinutes, setMindfulnessMinutes] = useState(24);
   const [sessions, setSessions] = useState(24);
   const [dayStreak] = useState(12);
@@ -183,7 +193,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const completeOnboarding = useCallback(() => {
     setOnboardingComplete(true);
-    localStorage.setItem(ONBOARDING_KEY, "1");
+    markOnboardingComplete();
+    saveStoredName(name);
     setMessages((prev) => {
       if (!prev.length || prev[0].role !== "ai") return prev;
       return [
@@ -199,17 +210,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = useCallback((profile: GoogleProfile) => {
     setGoogleUser(profile);
-    setName(profile.name);
-    saveGoogleAuth(profile);
+    setNameState(profile.name);
+    persistGoogleSession(profile);
     showToast(`Welcome, ${profile.name.split(" ")[0]}.`);
   }, [showToast]);
 
   const signOutGoogle = useCallback(() => {
     setGoogleUser(null);
-    clearGoogleAuth();
-    localStorage.removeItem(ONBOARDING_KEY);
+    clearSession();
     setOnboardingComplete(false);
-    setName("Partner");
+    setNameState("Partner");
     showToast("Signed out.");
     go("welcome", { replace: true });
   }, [go, showToast]);

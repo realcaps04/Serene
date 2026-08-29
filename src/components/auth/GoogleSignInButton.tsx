@@ -1,7 +1,8 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { fetchGoogleProfile, getGoogleClientId } from "../../lib/google-auth";
+import { fetchGoogleProfile, getGoogleClientId, loadGoogleAuth } from "../../lib/google-auth";
+import { hasActiveSession } from "../../lib/session";
 import { useApp } from "../../context/app-context";
 import { GoogleIcon } from "./GoogleIcon";
 
@@ -17,7 +18,7 @@ export function GoogleSignInButton({
   label = "Continue with Google",
   returningUser = false,
 }: GoogleSignInButtonProps) {
-  const { signInWithGoogle, showToast, go, completeOnboarding, onboardingComplete } = useApp();
+  const { signInWithGoogle, showToast, go, completeOnboarding } = useApp();
   const [busy, setBusy] = useState(false);
   const configured = Boolean(getGoogleClientId());
 
@@ -26,10 +27,11 @@ export function GoogleSignInButton({
     onSuccess: async (response) => {
       setBusy(true);
       try {
+        const existingGoogle = loadGoogleAuth();
         const profile = await fetchGoogleProfile(response.access_token);
         signInWithGoogle(profile);
 
-        if (returningUser || onboardingComplete) {
+        if (returningUser || hasActiveSession() || existingGoogle?.sub === profile.sub) {
           completeOnboarding();
         } else {
           go("goals");

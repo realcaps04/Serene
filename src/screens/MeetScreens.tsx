@@ -41,7 +41,7 @@ export function CompanionIntroScreen() {
 }
 
 export function SignInScreen() {
-  const { go, completeOnboarding, setName } = useApp();
+  const { go, completeOnboarding, setName, name } = useApp();
 
   return (
     <Screen>
@@ -50,8 +50,8 @@ export function SignInScreen() {
       <label className="mt-6 block">
         <span className="mb-2 block text-sm font-medium text-ink">Name</span>
         <input
-          defaultValue="Alex"
-          onChange={(e) => setName(e.target.value || "Alex")}
+          defaultValue={name}
+          onChange={(e) => setName(e.target.value || "Partner")}
           className="w-full rounded-input border border-line bg-white px-4 py-3.5 text-body text-ink shadow-soft outline-none dark:bg-surface-card"
         />
       </label>

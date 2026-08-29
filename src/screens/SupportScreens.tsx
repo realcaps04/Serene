@@ -76,36 +76,6 @@ export function SafetyScreen() {
   );
 }
 
-export function NotificationsScreen() {
-  const { go } = useApp();
-  return (
-    <Screen>
-      <Header
-        title="Notifications"
-        subtitle="Quiet reminders, never noise."
-        left={
-          <IconButton label="Back" onClick={() => go("home")}>
-            <ArrowLeft size={20} />
-          </IconButton>
-        }
-      />
-      <div className="space-y-3">
-        <Note title="Evening check-in" body="A small pause is waiting if you'd like one." />
-        <Note title="Your 5-minute reset" body="Today's practice is ready when you are." />
-      </div>
-    </Screen>
-  );
-}
-
-function Note({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="rounded-card border border-line bg-surface-card p-4 shadow-soft">
-      <p className="font-medium text-ink">{title}</p>
-      <p className="mt-1 text-body text-ink-secondary">{body}</p>
-    </div>
-  );
-}
-
 export function PrivacyScreen() {
   const { go } = useApp();
   return (

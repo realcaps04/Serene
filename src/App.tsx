@@ -1,7 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppProvider } from "./context/AppProvider";
 import { PwaPrompts } from "./components/pwa/PwaPrompts";
+import { SessionRedirect } from "./components/auth/SessionRedirect";
 import { AppShell } from "./components/navigation/AppShell";
+import { hasActiveSession } from "./lib/session";
 import { SplashScreen } from "./screens/SplashScreen";
 import { OnboardingScreen } from "./screens/OnboardingScreen";
 import { GoalsScreen } from "./screens/GoalsScreen";
@@ -15,8 +17,8 @@ import { JournalEditorScreen, JournalListScreen } from "./screens/JournalScreens
 import { InsightsScreen } from "./screens/InsightsScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
+import { NotificationsScreen } from "./screens/NotificationsScreen";
 import {
-  NotificationsScreen,
   PrivacyScreen,
   ProfileDetailsScreen,
   SafetyScreen,
@@ -26,6 +28,7 @@ export default function App() {
   return (
     <AppProvider>
       <PwaPrompts />
+      <SessionRedirect />
       <Routes>
         <Route path="/" element={<SplashScreen />} />
         <Route element={<AppShell />}>
@@ -50,7 +53,7 @@ export default function App() {
           <Route path="/app/privacy" element={<PrivacyScreen />} />
           <Route path="/app/profile/details" element={<ProfileDetailsScreen />} />
         </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to={hasActiveSession() ? "/app/home" : "/"} replace />} />
       </Routes>
     </AppProvider>
   );
