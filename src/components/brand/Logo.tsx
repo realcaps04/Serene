@@ -31,7 +31,7 @@ export function Logo({
     <div className={`inline-flex items-center gap-3 ${className}`}>
       <SereneMark size={size} />
       {withWordmark ? (
-        <span className="font-display text-[1.35rem] font-semibold tracking-tight text-ink">Serene</span>
+        <span className="font-display text-[1.2875rem] font-semibold tracking-tight text-ink">Serene</span>
       ) : null}
     </div>
   );
@@ -47,10 +47,10 @@ export function BrandLockup({
   return (
     <div className={`flex flex-col items-center text-center ${className}`}>
       <SereneMark size={markSize} title="Serene" />
-      <h1 className="mt-5 font-display text-[2.15rem] font-semibold tracking-[-0.03em] text-[#1A203E]">
+      <h1 className="mt-5 font-display text-[2.0875rem] font-semibold tracking-[-0.03em] text-[#1A203E]">
         Serene
       </h1>
-      <p className="mt-2 text-[0.92rem] font-medium tracking-[0.01em] text-[#1A203E]">
+      <p className="mt-2 text-[0.8575rem] font-medium tracking-[0.01em] text-[#1A203E]">
         Mindfulness • AI Companion • Wellbeing
       </p>
     </div>
@@ -84,7 +84,7 @@ export function Avatar({
   return (
     <div
       className="grid place-items-center rounded-full bg-gradient-to-br from-indigo-brand to-lavender text-white font-semibold shadow-soft"
-      style={{ width: size, height: size, fontSize: size * 0.38 }}
+      style={{ width: size, height: size, fontSize: size * 0.36 }}
       aria-hidden
     >
       {initial}

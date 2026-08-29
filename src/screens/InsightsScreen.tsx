@@ -36,9 +36,9 @@ export function InsightsScreen() {
       <Card className="p-4">
         <p className="mb-3 text-sm font-semibold text-ink">Mood this week</p>
         <svg viewBox="0 0 320 140" className="w-full" role="img" aria-label="Mood trend over the week, generally rising">
-          <text x="8" y="18" fontSize="14">🙂</text>
-          <text x="8" y="58" fontSize="14">😐</text>
-          <text x="8" y="98" fontSize="14">🙁</text>
+          <text x="8" y="18" fontSize="13">🙂</text>
+          <text x="8" y="58" fontSize="13">😐</text>
+          <text x="8" y="98" fontSize="13">🙁</text>
           <path
             d={linePath(POINTS)}
             fill="none"
@@ -50,7 +50,7 @@ export function InsightsScreen() {
             <circle key={i} cx={48 + i * 38} cy={120 - p * 100} r="4" fill="#5865F2" />
           ))}
           {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
-            <text key={d} x={40 + i * 38} y="136" fontSize="10" fill="#94A3B8">
+            <text key={d} x={40 + i * 38} y="136" fontSize="9" fill="#94A3B8">
               {d}
             </text>
           ))}

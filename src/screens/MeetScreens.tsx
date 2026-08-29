@@ -18,7 +18,7 @@ export function CompanionIntroScreen() {
       </IconButton>
 
       <div className="relative z-10 mt-2 max-w-sm">
-        <h1 className="font-display text-[1.75rem] font-semibold leading-tight tracking-tight text-[#1A203E]">
+        <h1 className="font-display text-[1.6875rem] font-semibold leading-tight tracking-tight text-[#1A203E]">
           Meet your companion.
         </h1>
         <p className="mt-3 text-body leading-relaxed text-ink-secondary">

@@ -39,8 +39,8 @@ export function CompanionScreen() {
           <ChevronLeft size={22} strokeWidth={1.85} />
         </button>
         <div className="text-center">
-          <h1 className="font-display text-[20px] font-semibold tracking-tight text-ink">Worry Tree</h1>
-          <p className="mt-0.5 text-[12px] text-ink-muted">Understand. Release. Grow.</p>
+          <h1 className="font-display text-[19px] font-semibold tracking-tight text-ink">Worry Tree</h1>
+          <p className="mt-0.5 text-[11px] text-ink-muted">Understand. Release. Grow.</p>
         </div>
         <button
           type="button"
@@ -78,7 +78,7 @@ export function CompanionScreen() {
         </div>
 
         <div className="min-w-0 w-full shrink-0 pt-2">
-          <p className="mb-3 text-[13px] font-semibold text-ink">Try one of these to get started</p>
+          <p className="mb-3 text-[12px] font-semibold text-ink">Try one of these to get started</p>
           <WorryStarterStrip starters={WORRY_STARTERS} onSelect={(s) => sendMessage(s.prompt, s.color)} />
 
           <ChatInput

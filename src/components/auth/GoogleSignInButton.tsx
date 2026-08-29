@@ -50,7 +50,7 @@ export function GoogleSignInButton({
       type="button"
       disabled={!configured || busy}
       onClick={() => login()}
-      className={`pressable inline-flex items-center justify-center gap-3 rounded-btn border border-[#DADCE0] bg-white px-5 py-3.5 text-[15px] font-semibold text-[#3C4043] shadow-[0_1px_2px_rgba(60,64,67,0.12)] transition hover:bg-[#F8F9FA] disabled:cursor-not-allowed disabled:opacity-60 dark:border-line dark:bg-surface-card dark:text-ink ${full ? "w-full" : ""}`}
+      className={`pressable inline-flex items-center justify-center gap-3 rounded-btn border border-[#DADCE0] bg-white px-5 py-3.5 text-[14px] font-semibold text-[#3C4043] shadow-[0_1px_2px_rgba(60,64,67,0.12)] transition hover:bg-[#F8F9FA] disabled:cursor-not-allowed disabled:opacity-60 dark:border-line dark:bg-surface-card dark:text-ink ${full ? "w-full" : ""}`}
     >
       {busy ? <Loader2 className="h-5 w-5 animate-spin text-ink-muted" aria-hidden /> : <GoogleIcon size={20} />}
       {label}

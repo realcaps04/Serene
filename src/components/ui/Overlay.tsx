@@ -21,7 +21,7 @@ export function SettingsRow({
         <Icon size={18} strokeWidth={1.75} aria-hidden />
       </span>
       <span className="min-w-0 flex-1 text-left">
-        <span className="block text-[15px] font-medium text-ink">{title}</span>
+        <span className="block text-[14px] font-medium text-ink">{title}</span>
         {value ? <span className="block text-meta text-ink-secondary">{value}</span> : null}
       </span>
       {toggle ? (

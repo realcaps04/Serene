@@ -28,7 +28,7 @@ function formatChatTime(iso?: string) {
 
 export function ChatTimestamp({ time }: { time?: string }) {
   return (
-    <p className="py-2 text-center text-[11px] font-medium text-[#A8ADB8]">{formatChatTime(time)}</p>
+    <p className="py-2 text-center text-[10px] font-medium text-[#A8ADB8]">{formatChatTime(time)}</p>
   );
 }
 
@@ -50,7 +50,7 @@ export function AIMessage({
     >
       <CloudMascotAvatar size={44} accentColor={accentColor} />
       <div
-        className="relative max-w-[82%] overflow-hidden rounded-[20px] px-4 py-3.5 pr-10 pl-4 text-[14px] leading-relaxed text-ink"
+        className="relative max-w-[82%] overflow-hidden rounded-[20px] px-4 py-3.5 pr-10 pl-4 text-[13px] leading-relaxed text-ink"
         style={{
           background: `linear-gradient(145deg, #ffffff 0%, ${accentColor}12 42%, ${accentColor}08 100%)`,
           boxShadow: `0 6px 22px ${accentColor}18, 0 2px 8px rgba(15,23,42,0.06)`,
@@ -97,10 +97,10 @@ export function UserMessage({
       className="flex flex-col items-end gap-1.5"
     >
       <Avatar name={name} picture={picture} size={28} />
-      <div className="max-w-[78%] rounded-[20px] bg-[#ECECF0] px-4 py-3 text-[14px] leading-relaxed text-ink">
+      <div className="max-w-[78%] rounded-[20px] bg-[#ECECF0] px-4 py-3 text-[13px] leading-relaxed text-ink">
         {text}
       </div>
-      <span className="flex items-center gap-1 pr-1 text-[11px] font-medium text-[#A8ADB8]">
+      <span className="flex items-center gap-1 pr-1 text-[10px] font-medium text-[#A8ADB8]">
         {formatChatTime(time)}
         <CheckCheck size={14} className="text-[#F43F5E]" strokeWidth={2.25} aria-label="Read" />
       </span>
@@ -161,8 +161,8 @@ export function WorryStarterCard({
       >
         <StarterIcon icon={starter.icon} />
       </span>
-      <span className="block text-[13px] font-semibold leading-tight text-ink">{starter.title}</span>
-      <span className="mt-1 block text-[10px] leading-snug text-ink-muted">{starter.subtitle}</span>
+      <span className="block text-[12px] font-semibold leading-tight text-ink">{starter.title}</span>
+      <span className="mt-1 block text-[9px] leading-snug text-ink-muted">{starter.subtitle}</span>
     </button>
   );
 }
@@ -263,7 +263,7 @@ export function ChatInput({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Type your message..."
-          className="min-w-0 flex-1 bg-transparent py-3 text-[14px] text-ink outline-none placeholder:text-[#B0B5C0]"
+          className="min-w-0 flex-1 bg-transparent py-3 text-[13px] text-ink outline-none placeholder:text-[#B0B5C0]"
         />
         <button
           type="button"

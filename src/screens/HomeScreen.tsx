@@ -92,17 +92,17 @@ function FeaturedCard({
       <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/5" />
 
-      <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-ink">
+      <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold text-ink">
         {duration}
       </span>
       {recommended ? (
-        <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-[#FBBF24]">
+        <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-[#FBBF24]">
           ★ Recommended
         </span>
       ) : null}
 
       <div className="relative flex min-h-[210px] flex-col justify-end p-5">
-        <h2 className="font-display text-[1.35rem] font-semibold leading-tight text-white">{title}</h2>
+        <h2 className="font-display text-[1.2875rem] font-semibold leading-tight text-white">{title}</h2>
         <p className="mt-1 max-w-[18rem] text-sm leading-relaxed text-white/90">{description}</p>
         <button
           type="button"
@@ -146,8 +146,8 @@ export function HomeScreen() {
           >
             <QuickActionGlyph id={id} />
             <span className="min-w-0">
-              <span className="block text-[15px] font-semibold text-ink">{title}</span>
-              <span className="block text-[12px] text-ink-muted">{subtitle}</span>
+              <span className="block text-[14px] font-semibold text-ink">{title}</span>
+              <span className="block text-[11px] text-ink-muted">{subtitle}</span>
             </span>
           </button>
         ))}

@@ -30,7 +30,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`pressable inline-flex items-center justify-center gap-2 rounded-btn px-5 py-3.5 text-[15px] font-semibold transition disabled:opacity-50 ${full ? "w-full" : ""} ${styles[variant]} ${className}`}
+      className={`pressable inline-flex items-center justify-center gap-2 rounded-btn px-5 py-3.5 text-[14px] font-semibold transition disabled:opacity-50 ${full ? "w-full" : ""} ${styles[variant]} ${className}`}
       disabled={disabled || loading}
       {...rest}
     >

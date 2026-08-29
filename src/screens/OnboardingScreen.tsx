@@ -76,11 +76,11 @@ export function OnboardingScreen() {
           transition={{ duration: 0.6 }}
         >
           <Logo size={80} />
-          <h1 className="mt-5 font-display text-[2.35rem] font-semibold tracking-[-0.03em] text-[#1A203E]">
+          <h1 className="mt-5 font-display text-[2.2875rem] font-semibold tracking-[-0.03em] text-[#1A203E]">
             Serene
           </h1>
-          <p className="mt-3 text-[0.98rem] font-medium text-[#1A203E]">Mindfulness • AI Companion</p>
-          <p className="mt-1 text-[0.92rem] font-normal text-ink-secondary">Wellbeing for everyone</p>
+          <p className="mt-3 text-[0.9175rem] font-medium text-[#1A203E]">Mindfulness • AI Companion</p>
+          <p className="mt-1 text-[0.8575rem] font-normal text-ink-secondary">Wellbeing for everyone</p>
         </motion.div>
 
         <ScreenActions className="relative z-10 space-y-3">

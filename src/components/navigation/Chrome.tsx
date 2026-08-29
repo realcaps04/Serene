@@ -77,7 +77,7 @@ export function Header({
           <div className="flex justify-start">{left}</div>
           {align === "center" ? (
             <div className="text-center">
-              <h1 className="font-display text-[22px] font-semibold tracking-tight text-ink">{title}</h1>
+              <h1 className="font-display text-[21px] font-semibold tracking-tight text-ink">{title}</h1>
               {subtitle ? <p className="mt-0.5 text-body text-ink-secondary">{subtitle}</p> : null}
             </div>
           ) : (
@@ -88,7 +88,7 @@ export function Header({
       ) : null}
       {align !== "center" ? (
         <>
-          <h1 className="font-display text-[22px] font-semibold tracking-tight text-ink">{title}</h1>
+          <h1 className="font-display text-[21px] font-semibold tracking-tight text-ink">{title}</h1>
           {subtitle ? <p className="mt-1 text-body text-ink-secondary">{subtitle}</p> : null}
         </>
       ) : null}
