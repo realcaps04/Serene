@@ -3,6 +3,7 @@ import type {
   AppSettings,
   ChatMessage,
   GoalId,
+  GoogleProfile,
   JournalEntry,
   MoodId,
   ScreenId,
@@ -10,6 +11,7 @@ import type {
 
 export interface AppState {
   name: string;
+  googleUser: GoogleProfile | null;
   goals: GoalId[];
   mood: MoodId | null;
   homeMood: MoodId | null;
@@ -40,6 +42,8 @@ export interface AppContextValue extends AppState {
   showToast: (message: string) => void;
   completeOnboarding: () => void;
   markBreathingComplete: () => void;
+  signInWithGoogle: (profile: GoogleProfile) => void;
+  signOutGoogle: () => void;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);

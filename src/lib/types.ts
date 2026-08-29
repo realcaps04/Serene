@@ -61,3 +61,10 @@ export interface AppSettings {
   sound: SoundChoice;
   language: string;
 }
+
+export interface GoogleProfile {
+  sub: string;
+  email: string;
+  name: string;
+  picture?: string;
+}

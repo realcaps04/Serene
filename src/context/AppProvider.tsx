@@ -5,11 +5,15 @@ import type {
   AppSettings,
   ChatMessage,
   GoalId,
+  GoogleProfile,
   JournalEntry,
   MoodId,
   ScreenId,
 } from "../lib/types";
 import { replyTo } from "../lib/companion";
+import { clearGoogleAuth, loadGoogleAuth, saveGoogleAuth } from "../lib/google-auth";
+
+const ONBOARDING_KEY = "serene-onboarding-complete";
 
 const ROUTES: Record<ScreenId, string> = {
   splash: "/",
@@ -78,7 +82,9 @@ const INITIAL_ENTRIES: JournalEntry[] = [
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  const [name, setName] = useState("Partner");
+  const savedGoogle = loadGoogleAuth();
+  const [name, setName] = useState(savedGoogle?.name ?? "Partner");
+  const [googleUser, setGoogleUser] = useState<GoogleProfile | null>(savedGoogle);
   const [goals, setGoals] = useState<GoalId[]>([]);
   const [mood, setMoodState] = useState<MoodId | null>(null);
   const [homeMood, setHomeMood] = useState<MoodId | null>(null);
@@ -89,7 +95,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [typing, setTyping] = useState(false);
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
   const [toast, setToast] = useState<string | null>(null);
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
+  const [onboardingComplete, setOnboardingComplete] = useState(
+    () => localStorage.getItem(ONBOARDING_KEY) === "1",
+  );
   const [mindfulnessMinutes, setMindfulnessMinutes] = useState(24);
   const [sessions, setSessions] = useState(24);
   const [dayStreak] = useState(12);
@@ -167,6 +175,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const completeOnboarding = useCallback(() => {
     setOnboardingComplete(true);
+    localStorage.setItem(ONBOARDING_KEY, "1");
     setMessages((prev) => {
       if (!prev.length || prev[0].role !== "ai") return prev;
       return [
@@ -180,6 +189,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
     go("home", { replace: true });
   }, [go, name]);
 
+  const signInWithGoogle = useCallback((profile: GoogleProfile) => {
+    setGoogleUser(profile);
+    setName(profile.name);
+    saveGoogleAuth(profile);
+    showToast(`Welcome, ${profile.name.split(" ")[0]}.`);
+  }, [showToast]);
+
+  const signOutGoogle = useCallback(() => {
+    setGoogleUser(null);
+    clearGoogleAuth();
+    localStorage.removeItem(ONBOARDING_KEY);
+    setOnboardingComplete(false);
+    setName("Partner");
+    showToast("Signed out.");
+    go("welcome", { replace: true });
+  }, [go, showToast]);
+
   const markBreathingComplete = useCallback(() => {
     setSessions((n) => n + 1);
     setMindfulnessMinutes((n) => n + settings.meditationDuration);
@@ -189,6 +215,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       name,
+      googleUser,
       goals,
       mood,
       homeMood,
@@ -216,9 +243,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       showToast,
       completeOnboarding,
       markBreathingComplete,
+      signInWithGoogle,
+      signOutGoogle,
     }),
     [
       name,
+      googleUser,
       goals,
       mood,
       homeMood,
@@ -242,6 +272,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       showToast,
       completeOnboarding,
       markBreathingComplete,
+      signInWithGoogle,
+      signOutGoogle,
     ],
   );
 

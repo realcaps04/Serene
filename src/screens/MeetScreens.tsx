@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import { GoogleSignInButton } from "../components/auth/GoogleSignInButton";
 import { Screen, ScreenActions } from "../components/navigation/AppShell";
 import { IconButton, PrimaryButton } from "../components/ui/Button";
 import { CloudMascot } from "../components/brand/CloudMascot";
@@ -58,6 +59,7 @@ export function SignInScreen() {
         This preview keeps you signed in locally. No password is stored.
       </p>
       <ScreenActions className="space-y-3">
+        <GoogleSignInButton returningUser />
         <PrimaryButton full onClick={completeOnboarding}>
           Continue
         </PrimaryButton>

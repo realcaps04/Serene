@@ -40,8 +40,11 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,jpg,webp}"],
         navigateFallback: "/index.html",
+        // Dev/prod SPA routes (/welcome, /app/*, etc.) — default allowlist is only `/`.
+        navigateFallbackAllowlist: [/^\/(?!api).*/],
+        navigateFallbackDenylist: [/^\/home\//, /^\/assets\//, /\.[^/]+$/],
         cleanupOutdatedCaches: true,
       },
       devOptions: {

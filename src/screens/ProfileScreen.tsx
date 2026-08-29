@@ -16,17 +16,19 @@ import { SettingsRow } from "../components/ui/Overlay";
 import { useApp } from "../context/app-context";
 
 export function ProfileScreen() {
-  const { name, dayStreak, sessions, journalEntries, go } = useApp();
+  const { name, googleUser, dayStreak, sessions, journalEntries, go } = useApp();
 
   return (
     <Screen className="overflow-y-auto">
       <Header align="center" title="Profile" />
 
       <div className="mb-5 flex items-center gap-3">
-        <Avatar name={name} size={56} />
+        <Avatar name={name} picture={googleUser?.picture} size={56} />
         <div>
           <p className="font-display text-xl font-semibold text-ink">{name}</p>
-          <p className="text-body text-ink-secondary">Your wellness journey</p>
+          <p className="text-body text-ink-secondary">
+            {googleUser?.email ?? "Your wellness journey"}
+          </p>
         </div>
       </div>
 

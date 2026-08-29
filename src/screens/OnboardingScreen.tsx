@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Logo } from "../components/brand/Logo";
+import { GoogleSignInButton } from "../components/auth/GoogleSignInButton";
 import { PrimaryButton } from "../components/ui/Button";
 import { Screen, ScreenActions } from "../components/navigation/AppShell";
 import { useApp } from "../context/app-context";
@@ -82,7 +83,7 @@ export function OnboardingScreen() {
           <p className="mt-1 text-[0.92rem] font-normal text-ink-secondary">Wellbeing for everyone</p>
         </motion.div>
 
-        <ScreenActions className="relative z-10 space-y-4">
+        <ScreenActions className="relative z-10 space-y-3">
           <PrimaryButton
             full
             onClick={() => {
@@ -92,6 +93,7 @@ export function OnboardingScreen() {
           >
             Get Started
           </PrimaryButton>
+          <GoogleSignInButton />
           <button
             type="button"
             className="w-full text-sm font-medium text-[#1A203E]"

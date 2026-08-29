@@ -60,10 +60,26 @@ export function BrandLockup({
 export function Avatar({
   size = 44,
   name = "Alex",
+  picture,
 }: {
   size?: number;
   name?: string;
+  picture?: string;
 }) {
+  if (picture) {
+    return (
+      <img
+        src={picture}
+        alt={name}
+        width={size}
+        height={size}
+        className="rounded-full object-cover shadow-soft ring-2 ring-white"
+        style={{ width: size, height: size }}
+        referrerPolicy="no-referrer"
+      />
+    );
+  }
+
   const initial = name.trim().charAt(0).toUpperCase() || "A";
   return (
     <div
