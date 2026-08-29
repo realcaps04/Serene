@@ -182,11 +182,11 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
       await syncUserData({
         googleSub: profile.sub,
         anonymousId,
+        ...snapshot,
         email: profile.email,
         googleName: profile.name,
         pictureUrl: profile.picture,
         displayName: profile.name,
-        ...snapshot,
       });
     },
     completeOnboarding: (displayName: string) =>
