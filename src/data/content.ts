@@ -17,12 +17,48 @@ export const MOODS: {
   caption: string;
   color: string;
   glow: string;
+  wheelColor: string;
 }[] = [
-  { id: "great", label: "Great", caption: "Light and open", color: "#93C5FD", glow: "rgba(147, 197, 253, 0.45)" },
-  { id: "good", label: "Good", caption: "Steady and well", color: "#A7E3D0", glow: "rgba(167, 227, 208, 0.45)" },
-  { id: "okay", label: "Okay", caption: "Somewhere in the middle", color: "#FBBF24", glow: "rgba(251, 191, 36, 0.35)" },
-  { id: "low", label: "Low", caption: "A little heavier today", color: "#FDA4AF", glow: "rgba(253, 164, 175, 0.4)" },
-  { id: "difficult", label: "Difficult", caption: "It's been a lot", color: "#A78BFA", glow: "rgba(167, 139, 250, 0.45)" },
+  {
+    id: "great",
+    label: "Great",
+    caption: "I'm feeling amazing!",
+    color: "#60A5FA",
+    glow: "rgba(96, 165, 250, 0.45)",
+    wheelColor: "#93C5FD",
+  },
+  {
+    id: "good",
+    label: "Good",
+    caption: "I'm feeling good",
+    color: "#34D399",
+    glow: "rgba(52, 211, 153, 0.4)",
+    wheelColor: "#A7E3D0",
+  },
+  {
+    id: "okay",
+    label: "Okay",
+    caption: "I'm doing okay.",
+    color: "#FBBF24",
+    glow: "rgba(251, 191, 36, 0.35)",
+    wheelColor: "#FCD34D",
+  },
+  {
+    id: "low",
+    label: "Low",
+    caption: "I'm feeling low",
+    color: "#FB7185",
+    glow: "rgba(251, 113, 133, 0.4)",
+    wheelColor: "#FDA4AF",
+  },
+  {
+    id: "difficult",
+    label: "Difficult",
+    caption: "I'm having a tough time.",
+    color: "#A78BFA",
+    glow: "rgba(167, 139, 250, 0.45)",
+    wheelColor: "#C4B5FD",
+  },
 ];
 
 export const QUICK_PROMPTS = [
