@@ -39,7 +39,7 @@ export function Screen({
 }) {
   return (
     <div
-      className={`flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-[var(--nav-content-clearance)] pt-[max(16px,env(safe-area-inset-top))] ${className}`}
+      className={`flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-[var(--nav-content-clearance)] pt-[max(16px,env(safe-area-inset-top))] [&>*]:shrink-0 ${className}`}
     >
       {children}
     </div>
