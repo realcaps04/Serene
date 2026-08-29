@@ -130,7 +130,10 @@ export function OnboardingScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, ease: "easeOut" }}
           >
-            <SereneMark size={72} />
+            <SereneMark
+              size={72}
+              className="drop-shadow-[0_10px_28px_rgba(122,90,248,0.28)]"
+            />
             <h1 className="mt-4 font-display text-[2rem] font-semibold tracking-[-0.03em] text-[#1A2B4C]">
               Serene
             </h1>
