@@ -1,10 +1,9 @@
-import { BookOpen, Home, MessageCircle, Orbit, User } from "lucide-react";
+import { BookOpen, Home, Orbit, User } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
   { to: "/app/home", label: "Home", icon: Home },
-  { to: "/app/companion", label: "Companion", icon: MessageCircle },
   { to: "/app/mindfulness", label: "Mindfulness", icon: Orbit },
   { to: "/app/journal", label: "Journal", icon: BookOpen },
   { to: "/app/profile", label: "Profile", icon: User },
