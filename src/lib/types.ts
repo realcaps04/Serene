@@ -21,6 +21,7 @@ export type ScreenId =
   | "companion"
   | "mindfulness"
   | "breathing"
+  | "friends"
   | "journal"
   | "journal-new"
   | "insights"

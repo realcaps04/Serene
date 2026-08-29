@@ -13,6 +13,7 @@ import { HomeScreen } from "./screens/HomeScreen";
 import { CompanionScreen } from "./screens/CompanionScreen";
 import { MindfulnessScreen } from "./screens/MindfulnessScreen";
 import { BreathingScreen } from "./screens/BreathingScreen";
+import { FriendsScreen } from "./screens/FriendsScreen";
 import { JournalEditorScreen, JournalListScreen } from "./screens/JournalScreens";
 import { InsightsScreen } from "./screens/InsightsScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
@@ -42,6 +43,7 @@ export default function App() {
         <Route element={<AppShell withNav />}>
           <Route path="/app/home" element={<HomeScreen />} />
           <Route path="/app/mindfulness" element={<MindfulnessScreen />} />
+          <Route path="/app/friends" element={<FriendsScreen />} />
           <Route path="/app/journal" element={<JournalListScreen />} />
           <Route path="/app/journal/new" element={<JournalEditorScreen />} />
           <Route path="/app/insights" element={<InsightsScreen />} />

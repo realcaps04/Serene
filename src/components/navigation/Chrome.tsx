@@ -1,11 +1,11 @@
-import { BookOpen, Home, Orbit, User } from "lucide-react";
+import { Home, Orbit, User, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
-const ITEMS: { to: string; label: string; icon: LucideIcon }[] = [
+const ITEMS: { to: string; label: string; icon: LucideIcon; badge?: string }[] = [
   { to: "/app/home", label: "Home", icon: Home },
   { to: "/app/mindfulness", label: "Mindfulness", icon: Orbit },
-  { to: "/app/journal", label: "Journal", icon: BookOpen },
+  { to: "/app/friends", label: "Friends", icon: Users, badge: "New" },
   { to: "/app/profile", label: "Profile", icon: User },
 ];
 
@@ -14,16 +14,25 @@ export function BottomNavigation() {
     <nav aria-label="Primary" className="shell-nav pointer-events-none fixed inset-x-0 z-30 md:absolute">
       <div className="mx-auto w-full max-w-shell px-4">
         <div className="pointer-events-auto mx-auto flex max-w-[390px] items-stretch justify-between rounded-[22px] bg-white px-2 py-2 shadow-[0_8px_28px_rgba(15,23,42,0.1)]">
-          {ITEMS.map(({ to, label, icon: Icon }) => (
+          {ITEMS.map(({ to, label, icon: Icon, badge }) => (
             <NavLink
               key={to}
               to={to}
               aria-label={label}
               title={label}
-              className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1"
+              className="relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1"
             >
               {({ isActive }) => (
                 <>
+                  {badge ? (
+                    <span
+                      className={`absolute -top-0.5 rounded-full px-1.5 py-px text-[8px] font-bold uppercase leading-none transition-opacity ${
+                        isActive ? "bg-[#FCE7F3] text-[#EC4899] opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      {badge}
+                    </span>
+                  ) : null}
                   <Icon
                     size={21}
                     strokeWidth={isActive ? 2.35 : 1.85}
@@ -37,6 +46,9 @@ export function BottomNavigation() {
                   >
                     {label}
                   </span>
+                  {isActive ? (
+                    <span className="absolute -bottom-0.5 h-0.5 w-5 rounded-full bg-indigo-brand" aria-hidden />
+                  ) : null}
                 </>
               )}
             </NavLink>

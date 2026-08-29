@@ -40,6 +40,7 @@ const ROUTES: Record<ScreenId, string> = {
   companion: "/app/companion",
   mindfulness: "/app/mindfulness",
   breathing: "/app/breathing",
+  friends: "/app/friends",
   journal: "/app/journal",
   "journal-new": "/app/journal/new",
   insights: "/app/insights",
