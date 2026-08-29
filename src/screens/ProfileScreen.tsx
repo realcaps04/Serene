@@ -25,10 +25,10 @@ import { useEffect, useState } from "react";
 import { GoogleSignInButton } from "../components/auth/GoogleSignInButton";
 import { Avatar } from "../components/brand/Logo";
 import { CloudMascot } from "../components/brand/CloudMascot";
+import { VerifiedBadge } from "../components/brand/VerifiedBadge";
 import { Screen } from "../components/navigation/AppShell";
 import { useApp } from "../context/app-context";
 import type { ScreenId } from "../lib/types";
-import verifiedBadge from "../assets/verified-badge.png";
 
 const PERSONALIZATION: MenuItem[] = [
   {
@@ -172,7 +172,7 @@ export function ProfileScreen() {
           <div className="min-w-0 flex-1 pt-1">
             <div className="flex flex-wrap items-center gap-2">
               <p className="font-display text-[20px] font-semibold text-[#1A203E]">{displayName}</p>
-              {isLoggedIn ? <VerifiedBadge /> : null}
+              {isLoggedIn ? <VerifiedBadge size={36} /> : null}
             </div>
             <p className="mt-0.5 text-[12px] text-[#9499A8]">Mindful since May 2024</p>
           </div>
@@ -363,15 +363,7 @@ function ProfileLoginHero() {
         </svg>
 
         <CloudMascot size={88} animated className="relative z-10 -mr-2 drop-shadow-[0_10px_24px_rgba(147,197,253,0.35)]" />
-        <img
-          src={verifiedBadge}
-          alt=""
-          width={52}
-          height={52}
-          draggable={false}
-          className="relative z-10 mb-3 h-[52px] w-[52px] object-contain mix-blend-screen drop-shadow-[0_6px_16px_rgba(124,105,239,0.35)]"
-          aria-hidden
-        />
+        <VerifiedBadge size={56} className="relative z-10 mb-3" />
       </div>
     </div>
   );
@@ -404,22 +396,6 @@ function LoginFeature({
 function formatFirstName(fullName: string) {
   const first = fullName.trim().split(" ")[0] || "Partner";
   return first.charAt(0).toUpperCase() + first.slice(1);
-}
-
-function VerifiedBadge() {
-  return (
-    <img
-      src={verifiedBadge}
-      alt=""
-      width={28}
-      height={28}
-      decoding="async"
-      draggable={false}
-      className="h-[28px] w-[28px] shrink-0 object-contain mix-blend-screen drop-shadow-[0_3px_8px_rgba(124,105,239,0.35)]"
-      aria-label="Verified account"
-      title="Verified Serene member"
-    />
-  );
 }
 
 function ProfileStat({
