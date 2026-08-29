@@ -153,7 +153,7 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
     isLoading: userData === undefined,
     scheduleSync,
     identity,
-    upsertGoogle: (profile: GoogleProfile) =>
+    upsertGoogle: (profile: import("../lib/types").GoogleProfile) =>
       upsertGoogle({
         googleSub: profile.sub,
         email: profile.email,
@@ -162,7 +162,7 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
         anonymousId,
         displayName: profile.name,
       }),
-    upsertGoogleAndSync: async (profile: GoogleProfile) => {
+    upsertGoogleAndSync: async (profile: import("../lib/types").GoogleProfile) => {
       const snapshot = getSnapshot();
       await upsertGoogle({
         googleSub: profile.sub,

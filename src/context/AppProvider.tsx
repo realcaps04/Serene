@@ -23,6 +23,9 @@ import {
 import { WORRY_STARTERS } from "../data/content";
 import { useConvexUserSync } from "../hooks/useConvexUserSync";
 import { defaultOnboardingMessage, defaultWelcomeMessage } from "../lib/convex-mappers";
+import { isConvexEnabled } from "../lib/convex-config";
+import type { ConvexSyncApi } from "../hooks/convex-sync-api";
+import { noopConvexSync } from "../hooks/convex-sync-api";
 
 const ROUTES: Record<ScreenId, string> = {
   splash: "/",
@@ -58,10 +61,142 @@ const INITIAL_SETTINGS: AppSettings = {
 };
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  if (isConvexEnabled) {
+    return <ConvexAppProvider>{children}</ConvexAppProvider>;
+  }
+  return <LocalAppProvider>{children}</LocalAppProvider>;
+}
+
+/** App state without Convex — used when VITE_CONVEX_URL is missing. */
+function LocalAppProvider({ children }: { children: ReactNode }) {
+  return <AppProviderInner convex={noopConvexSync}>{children}</AppProviderInner>;
+}
+
+/** App state with Convex sync — must render under ConvexProvider. */
+function ConvexAppProvider({ children }: { children: ReactNode }) {
+  const savedGoogle = loadGoogleAuth();
+  const [googleUser, setGoogleUser] = useState<GoogleProfile | null>(savedGoogle);
+
+  const syncBridgeRef = useRef<{
+    getSnapshot: () => ReturnType<typeof buildSyncSnapshot>;
+    onHydrate: (data: HydrationPayload) => void;
+  } | null>(null);
+
+  const convex = useConvexUserSync({
+    googleUser,
+    onHydrate: (data) => syncBridgeRef.current?.onHydrate(data),
+    getSnapshot: () =>
+      syncBridgeRef.current?.getSnapshot() ?? {
+        displayName: "Partner",
+        onboardingComplete: false,
+        goals: [],
+        settings: INITIAL_SETTINGS,
+        journalDraft: "",
+        stats: { dayStreak: 0, totalSessions: 0, totalMindfulnessMinutes: 0, journalEntryCount: 0 },
+        journalEntries: [],
+        chatMessages: [],
+      },
+  });
+
+  return (
+    <AppProviderInner
+      convex={convex as ConvexSyncApi}
+      googleUser={googleUser}
+      setGoogleUser={setGoogleUser}
+      syncBridgeRef={syncBridgeRef}
+    >
+      {children}
+    </AppProviderInner>
+  );
+}
+
+type HydrationPayload = {
+  name: string;
+  goals: GoalId[];
+  mood: MoodId | null;
+  homeMood: MoodId | null;
+  journalDraft: string;
+  journalEntries: JournalEntry[];
+  messages: ChatMessage[];
+  settings: AppSettings;
+  onboardingComplete: boolean;
+  mindfulnessMinutes: number;
+  sessions: number;
+  dayStreak: number;
+};
+
+function buildSyncSnapshot(args: {
+  name: string;
+  googleUser: GoogleProfile | null;
+  onboardingComplete: boolean;
+  goals: GoalId[];
+  settings: AppSettings;
+  mood: MoodId | null;
+  homeMood: MoodId | null;
+  journalDraft: string;
+  dayStreak: number;
+  sessions: number;
+  mindfulnessMinutes: number;
+  journalEntries: JournalEntry[];
+  messages: ChatMessage[];
+}) {
+  return {
+    displayName: args.name,
+    email: args.googleUser?.email,
+    googleName: args.googleUser?.name,
+    pictureUrl: args.googleUser?.picture,
+    onboardingComplete: args.onboardingComplete,
+    goals: args.goals,
+    settings: args.settings,
+    currentMood: args.mood ?? undefined,
+    homeMood: args.homeMood ?? undefined,
+    journalDraft: args.journalDraft,
+    stats: {
+      dayStreak: args.dayStreak,
+      totalSessions: args.sessions,
+      totalMindfulnessMinutes: args.mindfulnessMinutes,
+      journalEntryCount: args.journalEntries.length,
+    },
+    journalEntries: args.journalEntries.map((e) => ({
+      clientId: e.id,
+      title: e.title,
+      body: e.body,
+      mood: e.mood,
+      createdAt: new Date(e.createdAt).getTime(),
+    })),
+    chatMessages: args.messages.map((m) => ({
+      clientId: m.id,
+      role: m.role,
+      text: m.text,
+      accentColor: m.accentColor,
+      createdAt: m.createdAt ? new Date(m.createdAt).getTime() : Date.now(),
+    })),
+  };
+}
+
+function AppProviderInner({
+  children,
+  convex,
+  googleUser: googleUserProp,
+  setGoogleUser: setGoogleUserProp,
+  syncBridgeRef,
+}: {
+  children: ReactNode;
+  convex: ConvexSyncApi;
+  googleUser?: GoogleProfile | null;
+  setGoogleUser?: (user: GoogleProfile | null) => void;
+  syncBridgeRef?: React.MutableRefObject<{
+    getSnapshot: () => ReturnType<typeof buildSyncSnapshot>;
+    onHydrate: (data: HydrationPayload) => void;
+  } | null>;
+}) {
   const navigate = useNavigate();
   const savedGoogle = loadGoogleAuth();
+  const [internalGoogleUser, setInternalGoogleUser] = useState<GoogleProfile | null>(savedGoogle);
+  const googleUser = googleUserProp ?? internalGoogleUser;
+  const setGoogleUser = setGoogleUserProp ?? setInternalGoogleUser;
+
   const [name, setNameState] = useState(() => loadStoredName(savedGoogle?.name ?? "Partner"));
-  const [googleUser, setGoogleUser] = useState<GoogleProfile | null>(savedGoogle);
   const [goals, setGoals] = useState<GoalId[]>([]);
   const [mood, setMoodState] = useState<MoodId | null>(null);
   const [homeMood, setHomeMood] = useState<MoodId | null>(null);
@@ -77,98 +212,60 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [sessions, setSessions] = useState(0);
   const [dayStreak, setDayStreak] = useState(0);
 
-  const syncSnapshotRef = useRef({
-    displayName: name,
-    email: googleUser?.email,
-    googleName: googleUser?.name,
-    pictureUrl: googleUser?.picture,
-    onboardingComplete,
-    goals,
-    settings,
-    currentMood: mood ?? undefined,
-    homeMood: homeMood ?? undefined,
-    journalDraft,
-    stats: {
-      dayStreak: 0,
-      totalSessions: 0,
-      totalMindfulnessMinutes: 0,
-      journalEntryCount: 0,
-    },
-    journalEntries: [] as ReturnType<typeof import("../lib/convex-mappers").toConvexJournalEntry>[],
-    chatMessages: [] as ReturnType<typeof import("../lib/convex-mappers").toConvexChatMessage>[],
-  });
+  const onHydrate = useCallback((data: HydrationPayload) => {
+    setNameState(data.name);
+    setGoals(data.goals);
+    setMoodState(data.mood);
+    setHomeMood(data.homeMood);
+    setJournalDraft(data.journalDraft);
+    setJournalEntries(data.journalEntries);
+    setMessages(data.messages);
+    setSettings(data.settings);
+    setOnboardingComplete(data.onboardingComplete);
+    setMindfulnessMinutes(data.mindfulnessMinutes);
+    setSessions(data.sessions);
+    setDayStreak(data.dayStreak);
+    if (data.onboardingComplete) markOnboardingComplete();
+    saveStoredName(data.name);
+  }, []);
 
-  syncSnapshotRef.current = {
-    displayName: name,
-    email: googleUser?.email,
-    googleName: googleUser?.name,
-    pictureUrl: googleUser?.picture,
-    onboardingComplete,
-    goals,
-    settings,
-    currentMood: mood ?? undefined,
-    homeMood: homeMood ?? undefined,
-    journalDraft,
-    stats: {
+  const getSnapshot = useCallback(
+    () =>
+      buildSyncSnapshot({
+        name,
+        googleUser,
+        onboardingComplete,
+        goals,
+        settings,
+        mood,
+        homeMood,
+        journalDraft,
+        dayStreak,
+        sessions,
+        mindfulnessMinutes,
+        journalEntries,
+        messages,
+      }),
+    [
+      name,
+      googleUser,
+      onboardingComplete,
+      goals,
+      settings,
+      mood,
+      homeMood,
+      journalDraft,
       dayStreak,
-      totalSessions: sessions,
-      totalMindfulnessMinutes: mindfulnessMinutes,
-      journalEntryCount: journalEntries.length,
-    },
-    journalEntries: journalEntries.map((e) => ({
-      clientId: e.id,
-      title: e.title,
-      body: e.body,
-      mood: e.mood,
-      createdAt: new Date(e.createdAt).getTime(),
-    })),
-    chatMessages: messages.map((m) => ({
-      clientId: m.id,
-      role: m.role,
-      text: m.text,
-      accentColor: m.accentColor,
-      createdAt: m.createdAt ? new Date(m.createdAt).getTime() : Date.now(),
-    })),
-  };
-
-  const handleHydrate = useCallback(
-    (data: {
-      name: string;
-      goals: GoalId[];
-      mood: MoodId | null;
-      homeMood: MoodId | null;
-      journalDraft: string;
-      journalEntries: JournalEntry[];
-      messages: ChatMessage[];
-      settings: AppSettings;
-      onboardingComplete: boolean;
-      mindfulnessMinutes: number;
-      sessions: number;
-      dayStreak: number;
-    }) => {
-      setNameState(data.name);
-      setGoals(data.goals);
-      setMoodState(data.mood);
-      setHomeMood(data.homeMood);
-      setJournalDraft(data.journalDraft);
-      setJournalEntries(data.journalEntries);
-      setMessages(data.messages);
-      setSettings(data.settings);
-      setOnboardingComplete(data.onboardingComplete);
-      setMindfulnessMinutes(data.mindfulnessMinutes);
-      setSessions(data.sessions);
-      setDayStreak(data.dayStreak);
-      if (data.onboardingComplete) markOnboardingComplete();
-      saveStoredName(data.name);
-    },
-    [],
+      sessions,
+      mindfulnessMinutes,
+      journalEntries,
+      messages,
+    ],
   );
 
-  const convex = useConvexUserSync({
-    googleUser,
-    onHydrate: handleHydrate,
-    getSnapshot: () => syncSnapshotRef.current,
-  });
+  if (syncBridgeRef) {
+    syncBridgeRef.current = { getSnapshot, onHydrate };
+  }
 
   const setName = useCallback(
     (next: string) => {
@@ -191,10 +288,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const toggleGoal = useCallback(
     (id: GoalId) => {
-      setGoals((prev) => {
-        const next = prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id];
-        return next;
-      });
+      setGoals((prev) => (prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]));
       convex.scheduleSync();
     },
     [convex],
@@ -290,14 +384,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setGoogleUser(profile);
       setNameState(profile.name);
       persistGoogleSession(profile);
-      try {
-        await convex.upsertGoogleAndSync(profile);
+      if (isConvexEnabled) {
+        try {
+          await convex.upsertGoogleAndSync(profile);
+          showToast(`Welcome, ${profile.name.split(" ")[0]}.`);
+        } catch {
+          showToast("Google sign-in saved locally but could not sync. Please try again.");
+        }
+      } else {
         showToast(`Welcome, ${profile.name.split(" ")[0]}.`);
-      } catch {
-        showToast("Google sign-in saved locally but could not sync. Please try again.");
       }
     },
-    [convex, showToast],
+    [convex, setGoogleUser, showToast],
   );
 
   const signOutGoogle = useCallback(() => {
@@ -307,7 +405,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setNameState("Partner");
     showToast("Signed out.");
     go("welcome", { replace: true });
-  }, [go, showToast]);
+  }, [go, setGoogleUser, showToast]);
 
   const markBreathingComplete = useCallback(() => {
     setSessions((n) => n + 1);
