@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./app-context";
 import type {
@@ -21,6 +21,8 @@ import {
   saveStoredName,
 } from "../lib/session";
 import { WORRY_STARTERS } from "../data/content";
+import { useConvexUserSync } from "../hooks/useConvexUserSync";
+import { defaultOnboardingMessage, defaultWelcomeMessage } from "../lib/convex-mappers";
 
 const ROUTES: Record<ScreenId, string> = {
   splash: "/",
@@ -55,40 +57,6 @@ const INITIAL_SETTINGS: AppSettings = {
   language: "English",
 };
 
-const INITIAL_MESSAGES: ChatMessage[] = [
-  {
-    id: "m1",
-    role: "ai",
-    text: "Hi Partner, I'm Serene. I'm here to help you sort through worries using the Worry Tree.\n\nWe can decide what needs action, what to release, and what to sit with for now.\n\nHow are you feeling right now?",
-    createdAt: new Date().toISOString(),
-    accentColor: "#60A5FA",
-  },
-];
-
-const INITIAL_ENTRIES: JournalEntry[] = [
-  {
-    id: "j1",
-    title: "Feeling grateful today",
-    body: "A slow morning and a walk that actually felt like a walk.",
-    mood: "good",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "j2",
-    title: "A bit overwhelmed",
-    body: "Too many tabs open in my head. Naming it helped a little.",
-    mood: "low",
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: "j3",
-    title: "Peaceful morning",
-    body: "Coffee, quiet, and five minutes of breathing before the day started.",
-    mood: "great",
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
-  },
-];
-
 export function AppProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const savedGoogle = loadGoogleAuth();
@@ -99,21 +67,118 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [homeMood, setHomeMood] = useState<MoodId | null>(null);
   const [journalMood, setJournalMood] = useState<MoodId | null>(null);
   const [journalDraft, setJournalDraft] = useState("");
-  const [journalEntries, setJournalEntries] = useState(INITIAL_ENTRIES);
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([defaultOnboardingMessage()]);
   const [typing, setTyping] = useState(false);
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
   const [toast, setToast] = useState<string | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState(() => hasActiveSession());
+  const [mindfulnessMinutes, setMindfulnessMinutes] = useState(0);
+  const [sessions, setSessions] = useState(0);
+  const [dayStreak, setDayStreak] = useState(0);
 
-  const setName = useCallback((next: string) => {
-    const trimmed = next.trim() || "Partner";
-    setNameState(trimmed);
-    saveStoredName(trimmed);
-  }, []);
-  const [mindfulnessMinutes, setMindfulnessMinutes] = useState(24);
-  const [sessions, setSessions] = useState(24);
-  const [dayStreak] = useState(12);
+  const syncSnapshotRef = useRef({
+    displayName: name,
+    email: googleUser?.email,
+    googleName: googleUser?.name,
+    pictureUrl: googleUser?.picture,
+    onboardingComplete,
+    goals,
+    settings,
+    currentMood: mood ?? undefined,
+    homeMood: homeMood ?? undefined,
+    journalDraft,
+    stats: {
+      dayStreak: 0,
+      totalSessions: 0,
+      totalMindfulnessMinutes: 0,
+      journalEntryCount: 0,
+    },
+    journalEntries: [] as ReturnType<typeof import("../lib/convex-mappers").toConvexJournalEntry>[],
+    chatMessages: [] as ReturnType<typeof import("../lib/convex-mappers").toConvexChatMessage>[],
+  });
+
+  syncSnapshotRef.current = {
+    displayName: name,
+    email: googleUser?.email,
+    googleName: googleUser?.name,
+    pictureUrl: googleUser?.picture,
+    onboardingComplete,
+    goals,
+    settings,
+    currentMood: mood ?? undefined,
+    homeMood: homeMood ?? undefined,
+    journalDraft,
+    stats: {
+      dayStreak,
+      totalSessions: sessions,
+      totalMindfulnessMinutes: mindfulnessMinutes,
+      journalEntryCount: journalEntries.length,
+    },
+    journalEntries: journalEntries.map((e) => ({
+      clientId: e.id,
+      title: e.title,
+      body: e.body,
+      mood: e.mood,
+      createdAt: new Date(e.createdAt).getTime(),
+    })),
+    chatMessages: messages.map((m) => ({
+      clientId: m.id,
+      role: m.role,
+      text: m.text,
+      accentColor: m.accentColor,
+      createdAt: m.createdAt ? new Date(m.createdAt).getTime() : Date.now(),
+    })),
+  };
+
+  const handleHydrate = useCallback(
+    (data: {
+      name: string;
+      goals: GoalId[];
+      mood: MoodId | null;
+      homeMood: MoodId | null;
+      journalDraft: string;
+      journalEntries: JournalEntry[];
+      messages: ChatMessage[];
+      settings: AppSettings;
+      onboardingComplete: boolean;
+      mindfulnessMinutes: number;
+      sessions: number;
+      dayStreak: number;
+    }) => {
+      setNameState(data.name);
+      setGoals(data.goals);
+      setMoodState(data.mood);
+      setHomeMood(data.homeMood);
+      setJournalDraft(data.journalDraft);
+      setJournalEntries(data.journalEntries);
+      setMessages(data.messages);
+      setSettings(data.settings);
+      setOnboardingComplete(data.onboardingComplete);
+      setMindfulnessMinutes(data.mindfulnessMinutes);
+      setSessions(data.sessions);
+      setDayStreak(data.dayStreak);
+      if (data.onboardingComplete) markOnboardingComplete();
+      saveStoredName(data.name);
+    },
+    [],
+  );
+
+  const convex = useConvexUserSync({
+    googleUser,
+    onHydrate: handleHydrate,
+    getSnapshot: () => syncSnapshotRef.current,
+  });
+
+  const setName = useCallback(
+    (next: string) => {
+      const trimmed = next.trim() || "Partner";
+      setNameState(trimmed);
+      saveStoredName(trimmed);
+      convex.scheduleSync();
+    },
+    [convex],
+  );
 
   const go = useCallback(
     (screen: ScreenId, opts?: { replace?: boolean }) => {
@@ -124,14 +189,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [navigate],
   );
 
-  const toggleGoal = useCallback((id: GoalId) => {
-    setGoals((prev) => (prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]));
-  }, []);
+  const toggleGoal = useCallback(
+    (id: GoalId) => {
+      setGoals((prev) => {
+        const next = prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id];
+        return next;
+      });
+      convex.scheduleSync();
+    },
+    [convex],
+  );
 
-  const setMood = useCallback((next: MoodId) => {
-    setMoodState(next);
-    setHomeMood(next);
-  }, []);
+  const setMood = useCallback(
+    (next: MoodId) => {
+      setMoodState(next);
+      setHomeMood(next);
+      convex.scheduleSync();
+    },
+    [convex],
+  );
 
   const showToast = useCallback((message: string) => {
     setToast(message);
@@ -154,9 +230,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
     setJournalEntries((prev) => [entry, ...prev]);
     setJournalDraft("");
+    void convex.addJournalEntry(entry);
     showToast("Saved privately.");
     go("journal");
-  }, [go, homeMood, journalDraft, journalMood, showToast]);
+  }, [convex, go, homeMood, journalDraft, journalMood, showToast]);
 
   const sendMessage = useCallback(
     (text: string, accentColor?: string) => {
@@ -176,44 +253,52 @@ export function AppProvider({ children }: { children: ReactNode }) {
           createdAt: new Date().toISOString(),
           accentColor: replyAccent,
         };
-        setMessages((prev) => [...prev, reply]);
+        setMessages((prev) => {
+          const next = [...prev, reply];
+          void convex.addChatMessages([userMsg, reply]);
+          return next;
+        });
         setTyping(false);
       }, 900);
     },
-    [name, settings.aiPersonality],
+    [convex, name, settings.aiPersonality],
   );
 
-  const updateSettings = useCallback((patch: Partial<AppSettings>) => {
-    setSettings((prev) => {
-      const next = { ...prev, ...patch };
-      document.documentElement.classList.toggle("dark", next.darkMode);
-      return next;
-    });
-  }, []);
+  const updateSettings = useCallback(
+    (patch: Partial<AppSettings>) => {
+      setSettings((prev) => {
+        const next = { ...prev, ...patch };
+        document.documentElement.classList.toggle("dark", next.darkMode);
+        void convex.updateSettings(next);
+        return next;
+      });
+    },
+    [convex],
+  );
 
   const completeOnboarding = useCallback(() => {
     setOnboardingComplete(true);
     markOnboardingComplete();
     saveStoredName(name);
-    setMessages((prev) => {
-      if (!prev.length || prev[0].role !== "ai") return prev;
-      return [
-        {
-          ...prev[0],
-          text: `Hi ${name}, I'm Serene.\nHow are you feeling right now?`,
-        },
-        ...prev.slice(1),
-      ];
-    });
+    setMessages([defaultWelcomeMessage(name)]);
+    void convex.completeOnboarding(name);
     go("home", { replace: true });
-  }, [go, name]);
+  }, [convex, go, name]);
 
-  const signInWithGoogle = useCallback((profile: GoogleProfile) => {
-    setGoogleUser(profile);
-    setNameState(profile.name);
-    persistGoogleSession(profile);
-    showToast(`Welcome, ${profile.name.split(" ")[0]}.`);
-  }, [showToast]);
+  const signInWithGoogle = useCallback(
+    async (profile: GoogleProfile) => {
+      setGoogleUser(profile);
+      setNameState(profile.name);
+      persistGoogleSession(profile);
+      try {
+        await convex.upsertGoogleAndSync(profile);
+        showToast(`Welcome, ${profile.name.split(" ")[0]}.`);
+      } catch {
+        showToast("Google sign-in saved locally but could not sync. Please try again.");
+      }
+    },
+    [convex, showToast],
+  );
 
   const signOutGoogle = useCallback(() => {
     setGoogleUser(null);
@@ -227,8 +312,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const markBreathingComplete = useCallback(() => {
     setSessions((n) => n + 1);
     setMindfulnessMinutes((n) => n + settings.meditationDuration);
+    void convex.recordWellnessSession(settings.meditationDuration, settings.breathingPace);
     showToast("Nice pause. Your reflections stay yours.");
-  }, [settings.meditationDuration, showToast]);
+  }, [convex, settings.breathingPace, settings.meditationDuration, showToast]);
 
   const value = useMemo(
     () => ({
@@ -252,9 +338,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setName,
       toggleGoal,
       setMood,
-      setHomeMood,
+      setHomeMood: (next: MoodId) => {
+        setHomeMood(next);
+        convex.scheduleSync();
+      },
       setJournalMood,
-      setJournalDraft,
+      setJournalDraft: (value: string) => {
+        setJournalDraft(value);
+        convex.scheduleSync();
+      },
       saveJournal,
       sendMessage,
       updateSettings,
@@ -282,6 +374,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       sessions,
       dayStreak,
       go,
+      setName,
       toggleGoal,
       setMood,
       saveJournal,
@@ -292,6 +385,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       markBreathingComplete,
       signInWithGoogle,
       signOutGoogle,
+      convex,
     ],
   );
 

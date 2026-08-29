@@ -36,7 +36,7 @@ export function GoogleSignInButton({
       try {
         const existingGoogle = loadGoogleAuth();
         const profile = await fetchGoogleProfile(response.access_token);
-        signInWithGoogle(profile);
+        await signInWithGoogle(profile);
 
         if (onSignedIn) {
           onSignedIn();
