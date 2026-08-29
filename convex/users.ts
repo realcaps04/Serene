@@ -222,6 +222,9 @@ export const syncUserData = mutation({
     googleName: v.optional(v.string()),
     pictureUrl: v.optional(v.string()),
     profileQuote: v.optional(v.string()),
+    firstName: v.optional(v.string()),
+    lastName: v.optional(v.string()),
+    contactNumber: v.optional(v.string()),
     onboardingComplete: v.optional(v.boolean()),
     goals: v.optional(v.array(goalId)),
     settings: v.optional(userSettings),
@@ -268,6 +271,9 @@ export const syncUserData = mutation({
         ...(args.googleName !== undefined ? { googleName: args.googleName } : {}),
         ...(args.pictureUrl !== undefined ? { pictureUrl: args.pictureUrl } : {}),
         ...(args.profileQuote !== undefined ? { profileQuote: args.profileQuote } : {}),
+        ...(args.firstName !== undefined ? { firstName: args.firstName } : {}),
+        ...(args.lastName !== undefined ? { lastName: args.lastName } : {}),
+        ...(args.contactNumber !== undefined ? { contactNumber: args.contactNumber } : {}),
         ...(args.onboardingComplete !== undefined ? { onboardingComplete: args.onboardingComplete } : {}),
         ...(args.goals !== undefined ? { goals: args.goals } : {}),
         ...(args.settings !== undefined ? { settings: args.settings } : {}),
@@ -384,6 +390,32 @@ export const updateSettings = mutation({
     if (!user) throw new Error("User not found");
     const now = Date.now();
     await ctx.db.patch(user._id, { settings: args.settings, updatedAt: now, lastSeenAt: now });
+    return user._id;
+  },
+});
+
+/** Update profile details (name, phone). Email is primary and cannot be changed here. */
+export const updateProfileDetails = mutation({
+  args: {
+    googleSub: v.optional(v.string()),
+    anonymousId: v.optional(v.string()),
+    firstName: v.string(),
+    lastName: v.optional(v.string()),
+    contactNumber: v.optional(v.string()),
+    displayName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await findUser(ctx, args.googleSub, args.anonymousId);
+    if (!user) throw new Error("User not found");
+    const now = Date.now();
+    await ctx.db.patch(user._id, {
+      firstName: args.firstName,
+      lastName: args.lastName,
+      contactNumber: args.contactNumber,
+      displayName: args.displayName,
+      updatedAt: now,
+      lastSeenAt: now,
+    });
     return user._id;
   },
 });

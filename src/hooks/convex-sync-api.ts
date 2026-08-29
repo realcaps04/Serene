@@ -11,6 +11,7 @@ export interface ConvexSyncApi {
     breathingPace?: "slow" | "normal" | "gentle",
   ) => void | Promise<unknown>;
   updateSettings: (settings: AppSettings) => void | Promise<unknown>;
+  updateProfileDetails: (details: import("../lib/types").ProfileDetails) => Promise<void>;
 }
 
 /** Safe fallback when Convex is not configured — local-only mode. */
@@ -22,4 +23,5 @@ export const noopConvexSync: ConvexSyncApi = {
   addChatMessages: () => {},
   recordWellnessSession: () => {},
   updateSettings: () => {},
+  updateProfileDetails: async () => {},
 };

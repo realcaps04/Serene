@@ -26,6 +26,7 @@ import { GoogleSignInButton } from "../components/auth/GoogleSignInButton";
 import { Avatar } from "../components/brand/Logo";
 import { CloudMascot } from "../components/brand/CloudMascot";
 import { VerifiedBadge } from "../components/brand/VerifiedBadge";
+import { ProfileDetailsSheet } from "./ProfileDetailsScreen";
 import { Screen } from "../components/navigation/AppShell";
 import { useApp } from "../context/app-context";
 import type { ScreenId } from "../lib/types";
@@ -110,10 +111,11 @@ type MenuItem = {
 };
 
 export function ProfileScreen() {
-  const { name, googleUser, dayStreak, sessions, journalEntries, userCreatedAt, go, signOutGoogle, showToast } = useApp();
+  const { name, googleUser, dayStreak, sessions, journalEntries, userCreatedAt, profileQuote, go, signOutGoogle, showToast } = useApp();
   const isLoggedIn = Boolean(googleUser);
   const displayName = isLoggedIn ? formatFirstName(googleUser?.name ?? name) : "Partner";
   const [loginOpen, setLoginOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     setLoginOpen(!googleUser);
@@ -122,6 +124,7 @@ export function ProfileScreen() {
   return (
     <Screen className="pb-2">
       <ProfileLoginModal open={loginOpen && !isLoggedIn} onClose={() => setLoginOpen(false)} />
+      <ProfileDetailsSheet open={editOpen} onClose={() => setEditOpen(false)} />
       <header className="relative z-0 mb-5 min-h-[5.25rem] pt-1">
         <div
           className="pointer-events-none absolute right-0 top-0 z-0 h-[6.75rem] w-[6.75rem] overflow-hidden rounded-full opacity-95"
@@ -162,7 +165,7 @@ export function ProfileScreen() {
             <Avatar name={displayName} picture={isLoggedIn ? googleUser?.picture : undefined} size={72} />
             <button
               type="button"
-              onClick={() => go("profile-details")}
+              onClick={() => setEditOpen(true)}
               aria-label="Edit profile"
               className="absolute -bottom-0.5 -right-0.5 grid h-7 w-7 place-items-center rounded-full bg-[#7C69EF] text-white shadow-[0_2px_8px_rgba(124,105,239,0.45)]"
             >
@@ -185,7 +188,7 @@ export function ProfileScreen() {
             <span className="font-display text-[#DDD6FE]" aria-hidden>
               &ldquo;
             </span>
-            Small steps every day create big changes.
+            {profileQuote}
             <span className="font-display text-[#DDD6FE]" aria-hidden>
               &rdquo;
             </span>

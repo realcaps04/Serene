@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import type { GoogleProfile } from "../lib/types";
+import type { GoogleProfile, ProfileDetails } from "../lib/types";
 import {
   defaultOnboardingMessage,
   defaultWelcomeMessage,
@@ -14,6 +14,7 @@ import {
   statsToConvex,
 } from "../lib/convex-mappers";
 import { getOrCreateAnonymousId } from "../lib/anonymous-id";
+import { splitDisplayName } from "../lib/profile";
 
 export interface ConvexHydration {
   name: string;
@@ -29,6 +30,11 @@ export interface ConvexHydration {
   sessions: number;
   dayStreak: number;
   userCreatedAt: number | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  profileQuote: string;
 }
 
 interface SyncSnapshot {
@@ -50,6 +56,10 @@ interface SyncSnapshot {
   };
   journalEntries: ReturnType<typeof toConvexJournalEntry>[];
   chatMessages: ReturnType<typeof toConvexChatMessage>[];
+  firstName: string;
+  lastName: string;
+  contactNumber: string;
+  profileQuote: string;
 }
 
 interface UseConvexUserSyncArgs {
@@ -73,6 +83,7 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
   const addChatMessagesMutation = useMutation(api.users.addChatMessages);
   const recordWellnessSessionMutation = useMutation(api.users.recordWellnessSession);
   const updateSettingsMutation = useMutation(api.users.updateSettings);
+  const updateProfileDetailsMutation = useMutation(api.users.updateProfileDetails);
 
   useEffect(() => {
     if (userData === undefined) return;
@@ -90,6 +101,8 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
 
     const { user, journalEntries, chatMessages } = userData;
     const stats = statsFromConvex(user.stats);
+
+    const split = splitDisplayName(user.displayName);
 
     onHydrate({
       name: user.displayName,
@@ -126,6 +139,11 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
       sessions: stats.sessions,
       dayStreak: stats.dayStreak,
       userCreatedAt: user.createdAt,
+      firstName: user.firstName ?? split.firstName,
+      lastName: user.lastName ?? split.lastName,
+      email: user.email ?? "",
+      contactNumber: user.contactNumber ?? "",
+      profileQuote: user.profileQuote ?? "Small steps every day create big changes.",
     });
 
     if (user.settings.darkMode) {
@@ -216,6 +234,16 @@ export function useConvexUserSync({ googleUser, onHydrate, getSnapshot }: UseCon
       }),
     updateSettings: (settings: import("../lib/types").AppSettings) =>
       updateSettingsMutation({ ...identity, settings }),
+    updateProfileDetails: async (details: ProfileDetails) => {
+      const displayName = [details.firstName.trim(), details.lastName.trim()].filter(Boolean).join(" ") || "Partner";
+      await updateProfileDetailsMutation({
+        ...identity,
+        firstName: details.firstName.trim(),
+        lastName: details.lastName.trim() || undefined,
+        contactNumber: details.contactNumber.trim() || undefined,
+        displayName,
+      });
+    },
     syncNow: () => {
       const snapshot = getSnapshot();
       return syncUserData({ googleSub, anonymousId, ...snapshot });

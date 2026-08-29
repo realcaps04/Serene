@@ -97,27 +97,3 @@ export function PrivacyScreen() {
     </Screen>
   );
 }
-
-export function ProfileDetailsScreen() {
-  const { name, setName, go } = useApp();
-  return (
-    <Screen>
-      <Header
-        title="Profile Details"
-        left={
-          <IconButton label="Back" onClick={() => go("profile")}>
-            <ArrowLeft size={20} />
-          </IconButton>
-        }
-      />
-      <label className="block">
-        <span className="mb-2 block text-sm font-medium">Preferred name</span>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-input border border-line bg-white px-4 py-3.5 text-ink shadow-soft outline-none dark:bg-surface-card"
-        />
-      </label>
-    </Screen>
-  );
-}

@@ -6,6 +6,7 @@ import type {
   GoogleProfile,
   JournalEntry,
   MoodId,
+  ProfileDetails,
   ScreenId,
 } from "../lib/types";
 
@@ -27,6 +28,11 @@ export interface AppState {
   sessions: number;
   dayStreak: number;
   userCreatedAt: number | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  profileQuote: string;
 }
 
 export interface AppContextValue extends AppState {
@@ -45,6 +51,7 @@ export interface AppContextValue extends AppState {
   markBreathingComplete: () => void;
   signInWithGoogle: (profile: GoogleProfile) => Promise<void>;
   signOutGoogle: () => void;
+  saveProfileDetails: (details: ProfileDetails) => Promise<void>;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);

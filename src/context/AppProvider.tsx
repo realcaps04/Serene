@@ -8,6 +8,7 @@ import type {
   GoogleProfile,
   JournalEntry,
   MoodId,
+  ProfileDetails,
   ScreenId,
 } from "../lib/types";
 import { replyTo } from "../lib/companion";
@@ -23,6 +24,7 @@ import {
 import { WORRY_STARTERS } from "../data/content";
 import { useConvexUserSync } from "../hooks/useConvexUserSync";
 import { defaultOnboardingMessage, defaultWelcomeMessage } from "../lib/convex-mappers";
+import { buildDisplayName, splitDisplayName } from "../lib/profile";
 import { isConvexEnabled } from "../lib/convex-config";
 import type { ConvexSyncApi } from "../hooks/convex-sync-api";
 import { noopConvexSync } from "../hooks/convex-sync-api";
@@ -95,6 +97,10 @@ function ConvexAppProvider({ children }: { children: ReactNode }) {
         stats: { dayStreak: 0, totalSessions: 0, totalMindfulnessMinutes: 0, journalEntryCount: 0 },
         journalEntries: [],
         chatMessages: [],
+        firstName: "Partner",
+        lastName: "",
+        contactNumber: "",
+        profileQuote: "Small steps every day create big changes.",
       },
   });
 
@@ -124,6 +130,11 @@ type HydrationPayload = {
   sessions: number;
   dayStreak: number;
   userCreatedAt: number | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  profileQuote: string;
 };
 
 function buildSyncSnapshot(args: {
@@ -140,10 +151,15 @@ function buildSyncSnapshot(args: {
   mindfulnessMinutes: number;
   journalEntries: JournalEntry[];
   messages: ChatMessage[];
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  profileQuote: string;
 }) {
   return {
     displayName: args.name,
-    email: args.googleUser?.email,
+    email: args.googleUser?.email ?? args.email,
     googleName: args.googleUser?.name,
     pictureUrl: args.googleUser?.picture,
     onboardingComplete: args.onboardingComplete,
@@ -152,6 +168,10 @@ function buildSyncSnapshot(args: {
     currentMood: args.mood ?? undefined,
     homeMood: args.homeMood ?? undefined,
     journalDraft: args.journalDraft,
+    firstName: args.firstName,
+    lastName: args.lastName,
+    contactNumber: args.contactNumber,
+    profileQuote: args.profileQuote,
     stats: {
       dayStreak: args.dayStreak,
       totalSessions: args.sessions,
@@ -197,7 +217,14 @@ function AppProviderInner({
   const googleUser = googleUserProp ?? internalGoogleUser;
   const setGoogleUser = setGoogleUserProp ?? setInternalGoogleUser;
 
-  const [name, setNameState] = useState(() => loadStoredName(savedGoogle?.name ?? "Partner"));
+  const initialName = loadStoredName(savedGoogle?.name ?? "Partner");
+  const initialSplit = splitDisplayName(initialName);
+  const [name, setNameState] = useState(initialName);
+  const [firstName, setFirstName] = useState(initialSplit.firstName);
+  const [lastName, setLastName] = useState(initialSplit.lastName);
+  const [email, setEmail] = useState(savedGoogle?.email ?? "");
+  const [contactNumber, setContactNumber] = useState("");
+  const [profileQuote, setProfileQuote] = useState("Small steps every day create big changes.");
   const [goals, setGoals] = useState<GoalId[]>([]);
   const [mood, setMoodState] = useState<MoodId | null>(null);
   const [homeMood, setHomeMood] = useState<MoodId | null>(null);
@@ -228,6 +255,11 @@ function AppProviderInner({
     setSessions(data.sessions);
     setDayStreak(data.dayStreak);
     setUserCreatedAt(data.userCreatedAt);
+    setFirstName(data.firstName);
+    setLastName(data.lastName);
+    setEmail(data.email);
+    setContactNumber(data.contactNumber);
+    setProfileQuote(data.profileQuote);
     if (data.onboardingComplete) markOnboardingComplete();
     saveStoredName(data.name);
   }, []);
@@ -248,6 +280,11 @@ function AppProviderInner({
         mindfulnessMinutes,
         journalEntries,
         messages,
+        firstName,
+        lastName,
+        email,
+        contactNumber,
+        profileQuote,
       }),
     [
       name,
@@ -263,6 +300,11 @@ function AppProviderInner({
       mindfulnessMinutes,
       journalEntries,
       messages,
+      firstName,
+      lastName,
+      email,
+      contactNumber,
+      profileQuote,
     ],
   );
 
@@ -384,8 +426,12 @@ function AppProviderInner({
 
   const signInWithGoogle = useCallback(
     async (profile: GoogleProfile) => {
+      const split = splitDisplayName(profile.name);
       setGoogleUser(profile);
       setNameState(profile.name);
+      setFirstName(split.firstName);
+      setLastName(split.lastName);
+      setEmail(profile.email);
       persistGoogleSession(profile);
       if (isConvexEnabled) {
         try {
@@ -406,6 +452,10 @@ function AppProviderInner({
     clearSession();
     setOnboardingComplete(false);
     setNameState("Partner");
+    setFirstName("Partner");
+    setLastName("");
+    setEmail("");
+    setContactNumber("");
     setUserCreatedAt(null);
     showToast("Signed out.");
     go("welcome", { replace: true });
@@ -417,6 +467,24 @@ function AppProviderInner({
     void convex.recordWellnessSession(settings.meditationDuration, settings.breathingPace);
     showToast("Nice pause. Your reflections stay yours.");
   }, [convex, settings.breathingPace, settings.meditationDuration, showToast]);
+
+  const saveProfileDetails = useCallback(
+    async (details: ProfileDetails) => {
+      const displayName = buildDisplayName(details.firstName, details.lastName);
+      setFirstName(details.firstName.trim());
+      setLastName(details.lastName.trim());
+      setContactNumber(details.contactNumber.trim());
+      setNameState(displayName);
+      saveStoredName(displayName);
+      try {
+        await convex.updateProfileDetails(details);
+        showToast("Profile saved.");
+      } catch {
+        showToast("Saved locally but could not sync to cloud.");
+      }
+    },
+    [convex, showToast],
+  );
 
   const value = useMemo(
     () => ({
@@ -437,6 +505,11 @@ function AppProviderInner({
       sessions,
       dayStreak,
       userCreatedAt,
+      firstName,
+      lastName,
+      email,
+      contactNumber,
+      profileQuote,
       go,
       setName,
       toggleGoal,
@@ -458,6 +531,7 @@ function AppProviderInner({
       markBreathingComplete,
       signInWithGoogle,
       signOutGoogle,
+      saveProfileDetails,
     }),
     [
       name,
@@ -477,6 +551,11 @@ function AppProviderInner({
       sessions,
       dayStreak,
       userCreatedAt,
+      firstName,
+      lastName,
+      email,
+      contactNumber,
+      profileQuote,
       go,
       setName,
       toggleGoal,
@@ -489,6 +568,7 @@ function AppProviderInner({
       markBreathingComplete,
       signInWithGoogle,
       signOutGoogle,
+      saveProfileDetails,
       convex,
     ],
   );

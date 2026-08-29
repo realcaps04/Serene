@@ -20,7 +20,6 @@ import { SettingsScreen } from "./screens/SettingsScreen";
 import { NotificationsScreen } from "./screens/NotificationsScreen";
 import {
   PrivacyScreen,
-  ProfileDetailsScreen,
   SafetyScreen,
 } from "./screens/SupportScreens";
 
@@ -51,7 +50,7 @@ export default function App() {
           <Route path="/app/support" element={<SafetyScreen />} />
           <Route path="/app/notifications" element={<NotificationsScreen />} />
           <Route path="/app/privacy" element={<PrivacyScreen />} />
-          <Route path="/app/profile/details" element={<ProfileDetailsScreen />} />
+          <Route path="/app/profile/details" element={<Navigate to="/app/profile" replace />} />
         </Route>
         <Route path="*" element={<Navigate to={hasActiveSession() ? "/app/home" : "/"} replace />} />
       </Routes>

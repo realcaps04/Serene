@@ -70,3 +70,9 @@ export interface GoogleProfile {
   name: string;
   picture?: string;
 }
+
+export interface ProfileDetails {
+  firstName: string;
+  lastName: string;
+  contactNumber: string;
+}
