@@ -469,6 +469,16 @@ function AppProviderInner({
     showToast("Nice pause. Your reflections stay yours.");
   }, [convex, settings.breathingPace, settings.meditationDuration, showToast]);
 
+  const completeMindfulnessPractice = useCallback(
+    (minutes: number) => {
+      setSessions((n) => n + 1);
+      setMindfulnessMinutes((n) => n + minutes);
+      void convex.recordWellnessSession(minutes, settings.breathingPace);
+      showToast("Beautiful pause. Well done.");
+    },
+    [convex, settings.breathingPace, showToast],
+  );
+
   const saveProfileDetails = useCallback(
     async (details: ProfileDetails) => {
       const displayName = buildDisplayName(details.firstName, details.lastName);
@@ -530,6 +540,7 @@ function AppProviderInner({
       showToast,
       completeOnboarding,
       markBreathingComplete,
+      completeMindfulnessPractice,
       signInWithGoogle,
       signOutGoogle,
       saveProfileDetails,
@@ -567,6 +578,7 @@ function AppProviderInner({
       showToast,
       completeOnboarding,
       markBreathingComplete,
+      completeMindfulnessPractice,
       signInWithGoogle,
       signOutGoogle,
       saveProfileDetails,

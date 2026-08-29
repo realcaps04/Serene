@@ -227,13 +227,16 @@ export const PRACTICES = [
   },
 ];
 
-export const CATEGORY_META: Record<string, { count: string; tone: string }> = {
-  Breathing: { count: "8 exercises", tone: "lavender" },
-  Meditation: { count: "12 sessions", tone: "indigo" },
-  Sleep: { count: "6 practices", tone: "pink" },
-  Stress: { count: "9 sessions", tone: "coral" },
-  Focus: { count: "7 practices", tone: "sky" },
-  Relaxation: { count: "10 sessions", tone: "mint" },
+export type MindfulnessPractice = (typeof PRACTICES)[number];
+export type MindfulnessCategory = (typeof MINDFULNESS_CATEGORIES)[number];
+
+export const CATEGORY_META: Record<string, { count: string; tone: string; tagline: string }> = {
+  Breathing: { count: "8 exercises", tone: "lavender", tagline: "Calm your mind" },
+  Meditation: { count: "12 sessions", tone: "indigo", tagline: "Find your center" },
+  Sleep: { count: "6 practices", tone: "pink", tagline: "Rest deeply" },
+  Stress: { count: "9 sessions", tone: "coral", tagline: "Release tension" },
+  Focus: { count: "7 practices", tone: "sky", tagline: "Clear the noise" },
+  Relaxation: { count: "10 sessions", tone: "mint", tagline: "Soft landing" },
 };
 
 export const INSIGHT_COPY = {

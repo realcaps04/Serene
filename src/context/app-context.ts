@@ -49,6 +49,7 @@ export interface AppContextValue extends AppState {
   showToast: (message: string) => void;
   completeOnboarding: () => void;
   markBreathingComplete: () => void;
+  completeMindfulnessPractice: (minutes: number) => void;
   signInWithGoogle: (profile: GoogleProfile) => Promise<void>;
   signOutGoogle: () => void;
   saveProfileDetails: (details: ProfileDetails) => Promise<void>;

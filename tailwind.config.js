@@ -89,11 +89,31 @@ export default {
           "0%, 80%, 100%": { opacity: "0.25", transform: "scale(0.85)" },
           "40%": { opacity: "1", transform: "scale(1)" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        ripple: {
+          "0%": { transform: "scale(0.65)", opacity: "0.55" },
+          "100%": { transform: "scale(1.35)", opacity: "0" },
+        },
+        "spin-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        shimmer: {
+          "0%, 100%": { opacity: "0.45" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.7s ease-out both",
         breathe: "breathe 8s ease-in-out infinite",
         "pulse-dot": "pulseDot 1.2s ease-in-out infinite",
+        float: "float 5s ease-in-out infinite",
+        ripple: "ripple 3.5s ease-out infinite",
+        "spin-slow": "spin-slow 18s linear infinite",
+        shimmer: "shimmer 2.8s ease-in-out infinite",
       },
     },
   },
