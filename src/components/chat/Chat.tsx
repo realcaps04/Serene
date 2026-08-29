@@ -50,7 +50,7 @@ export function AIMessage({
     >
       <CloudMascotAvatar size={44} accentColor={accentColor} />
       <div
-        className="relative max-w-[82%] overflow-hidden rounded-[20px] px-4 py-3.5 pr-10 text-[14px] leading-relaxed text-ink shadow-[0_6px_22px_rgba(15,23,42,0.08)]"
+        className="relative max-w-[82%] overflow-hidden rounded-[20px] px-4 py-3.5 pr-10 pl-4 text-[14px] leading-relaxed text-ink"
         style={{
           background: `linear-gradient(145deg, #ffffff 0%, ${accentColor}12 42%, ${accentColor}08 100%)`,
           boxShadow: `0 6px 22px ${accentColor}18, 0 2px 8px rgba(15,23,42,0.06)`,
@@ -108,11 +108,17 @@ export function UserMessage({
   );
 }
 
-export function TypingDots() {
+export function TypingDots({ accentColor = "#60A5FA" }: { accentColor?: string }) {
   return (
     <div className="flex items-end gap-2.5" aria-label="Serene is thinking">
-      <CloudMascotAvatar size={44} />
-      <div className="flex gap-1.5 rounded-[20px] bg-white px-4 py-3.5 shadow-[0_4px_18px_rgba(15,23,42,0.07)]">
+      <CloudMascotAvatar size={44} accentColor={accentColor} />
+      <div
+        className="flex gap-1.5 rounded-[20px] px-4 py-3.5"
+        style={{
+          background: `linear-gradient(145deg, #ffffff 0%, ${accentColor}12 100%)`,
+          boxShadow: `0 6px 22px ${accentColor}18`,
+        }}
+      >
         <span className="h-1.5 w-1.5 rounded-full bg-[#C4C9D4] animate-pulse-dot" />
         <span className="h-1.5 w-1.5 rounded-full bg-[#A8ADB8] animate-pulse-dot [animation-delay:150ms]" />
         <span className="h-1.5 w-1.5 rounded-full bg-[#8B919C] animate-pulse-dot [animation-delay:300ms]" />

@@ -37,7 +37,7 @@ export interface AppContextValue extends AppState {
   setJournalMood: (mood: MoodId) => void;
   setJournalDraft: (value: string) => void;
   saveJournal: () => void;
-  sendMessage: (text: string) => void;
+  sendMessage: (text: string, accentColor?: string) => void;
   updateSettings: (patch: Partial<AppSettings>) => void;
   showToast: (message: string) => void;
   completeOnboarding: () => void;

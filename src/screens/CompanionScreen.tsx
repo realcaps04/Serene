@@ -12,6 +12,12 @@ import {
 import { useApp } from "../context/app-context";
 import { WORRY_STARTERS } from "../data/content";
 
+function resolveTypingAccent(messages: { role: string; text: string }[]) {
+  const lastUser = [...messages].reverse().find((m) => m.role === "user");
+  if (!lastUser) return "#60A5FA";
+  return WORRY_STARTERS.find((s) => s.prompt === lastUser.text)?.color ?? "#60A5FA";
+}
+
 export function CompanionScreen() {
   const { messages, typing, sendMessage, go, showToast, name, googleUser } = useApp();
   const endRef = useRef<HTMLDivElement>(null);
@@ -53,6 +59,7 @@ export function CompanionScreen() {
               <AIMessage
                 key={msg.id}
                 text={msg.text}
+                accentColor={msg.accentColor}
                 onSpeak={() => showToast("Listen is coming soon — read along for now.")}
               />
             ) : (
@@ -65,14 +72,14 @@ export function CompanionScreen() {
               />
             ),
           )}
-          {typing ? <TypingDots /> : null}
+          {typing ? <TypingDots accentColor={resolveTypingAccent(messages)} /> : null}
           {!typing && lastMessage ? <ChatTimestamp time={lastMessage.createdAt} /> : null}
           <div ref={endRef} />
         </div>
 
         <div className="shrink-0 pt-2">
           <p className="mb-3 text-[13px] font-semibold text-ink">Try one of these to get started</p>
-          <WorryStarterStrip starters={WORRY_STARTERS} onSelect={(s) => sendMessage(s.prompt)} />
+          <WorryStarterStrip starters={WORRY_STARTERS} onSelect={(s) => sendMessage(s.prompt, s.color)} />
 
           <ChatInput
             onSend={sendMessage}

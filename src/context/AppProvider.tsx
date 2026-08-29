@@ -12,6 +12,7 @@ import type {
 } from "../lib/types";
 import { replyTo } from "../lib/companion";
 import { clearGoogleAuth, loadGoogleAuth, saveGoogleAuth } from "../lib/google-auth";
+import { WORRY_STARTERS } from "../data/content";
 
 const ONBOARDING_KEY = "serene-onboarding-complete";
 
@@ -54,6 +55,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
     role: "ai",
     text: "Hi Partner, I'm Serene. I'm here to help you sort through worries using the Worry Tree.\n\nWe can decide what needs action, what to release, and what to sit with for now.\n\nHow are you feeling right now?",
     createdAt: new Date().toISOString(),
+    accentColor: "#60A5FA",
   },
 ];
 
@@ -147,10 +149,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [go, homeMood, journalDraft, journalMood, showToast]);
 
   const sendMessage = useCallback(
-    (text: string) => {
+    (text: string, accentColor?: string) => {
       const trimmed = text.trim();
       if (!trimmed) return;
       const now = new Date().toISOString();
+      const replyAccent =
+        accentColor ?? WORRY_STARTERS.find((s) => s.prompt === trimmed)?.color ?? "#60A5FA";
       const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", text: trimmed, createdAt: now };
       setMessages((prev) => [...prev, userMsg]);
       setTyping(true);
@@ -160,6 +164,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           role: "ai",
           text: replyTo(trimmed, name, settings.aiPersonality),
           createdAt: new Date().toISOString(),
+          accentColor: replyAccent,
         };
         setMessages((prev) => [...prev, reply]);
         setTyping(false);
