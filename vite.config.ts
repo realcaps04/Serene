@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "prompt",
-      includeAssets: ["favicon.png", "apple-touch-icon.png", "logo.png", "cloud-mascot.png"],
+      includeAssets: ["favicon.svg", "favicon.png", "apple-touch-icon.png", "logo.png", "cloud-mascot.png"],
       manifest: {
         name: "Serene — Be kind to your mind.",
         short_name: "Serene",
