@@ -52,7 +52,7 @@ export function CompanionScreen() {
         </button>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto pb-2">
           {messages.map((msg) =>
             msg.role === "ai" ? (
@@ -77,7 +77,7 @@ export function CompanionScreen() {
           <div ref={endRef} />
         </div>
 
-        <div className="shrink-0 pt-2">
+        <div className="min-w-0 w-full shrink-0 pt-2">
           <p className="mb-3 text-[13px] font-semibold text-ink">Try one of these to get started</p>
           <WorryStarterStrip starters={WORRY_STARTERS} onSelect={(s) => sendMessage(s.prompt, s.color)} />
 

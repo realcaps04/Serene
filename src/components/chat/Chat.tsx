@@ -13,7 +13,7 @@ import {
   Volume2,
   Wind,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Avatar } from "../brand/Logo";
 import { CloudMascotAvatar } from "../brand/CloudMascot";
@@ -150,7 +150,7 @@ export function WorryStarterCard({
     <button
       type="button"
       onClick={onSelect}
-      className="pressable w-[108px] shrink-0 snap-start rounded-[18px] bg-white px-3 py-3.5 text-left shadow-[0_6px_20px_rgba(15,23,42,0.07)]"
+      className="pressable w-[108px] shrink-0 snap-start select-none rounded-[18px] bg-white px-3 py-3.5 text-left shadow-[0_6px_20px_rgba(15,23,42,0.07)] touch-manipulation"
     >
       <span
         className="mb-2.5 grid h-10 w-10 place-items-center rounded-full"
@@ -174,14 +174,57 @@ export function WorryStarterStrip({
   starters: WorryStarter[];
   onSelect: (starter: WorryStarter) => void;
 }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef({ active: false, moved: false, startX: 0, scrollLeft: 0 });
+
+  const endDrag = (pointerId: number) => {
+    scrollerRef.current?.releasePointerCapture(pointerId);
+    dragRef.current.active = false;
+  };
+
   return (
-    <div
-      className="scrollbar-none -mx-4 mb-4 flex snap-x snap-mandatory gap-2.5 overflow-x-auto overscroll-x-contain px-4 pb-1 touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      aria-label="Conversation starters"
-    >
-      {starters.map((starter) => (
-        <WorryStarterCard key={starter.id} starter={starter} onSelect={() => onSelect(starter)} />
-      ))}
+    <div className="-mx-4 mb-4 min-w-0 overflow-hidden">
+      <div
+        ref={scrollerRef}
+        className="scrollbar-none cursor-grab overflow-x-auto overscroll-x-contain active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden"
+        aria-label="Conversation starters"
+        onPointerDown={(e) => {
+          const el = scrollerRef.current;
+          if (!el) return;
+          dragRef.current = {
+            active: true,
+            moved: false,
+            startX: e.clientX,
+            scrollLeft: el.scrollLeft,
+          };
+          el.setPointerCapture(e.pointerId);
+        }}
+        onPointerMove={(e) => {
+          const el = scrollerRef.current;
+          if (!el || !dragRef.current.active) return;
+          const dx = e.clientX - dragRef.current.startX;
+          if (Math.abs(dx) > 6) dragRef.current.moved = true;
+          el.scrollLeft = dragRef.current.scrollLeft - dx;
+        }}
+        onPointerUp={(e) => endDrag(e.pointerId)}
+        onPointerCancel={(e) => endDrag(e.pointerId)}
+      >
+        <div className="flex w-max snap-x snap-mandatory gap-2.5 px-4 pb-1">
+          {starters.map((starter) => (
+            <WorryStarterCard
+              key={starter.id}
+              starter={starter}
+              onSelect={() => {
+                if (dragRef.current.moved) {
+                  dragRef.current.moved = false;
+                  return;
+                }
+                onSelect(starter);
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
