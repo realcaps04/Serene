@@ -1,7 +1,6 @@
 import { ChevronDown, ChevronRight, Phone } from "lucide-react";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { WhatsAppIcon } from "../brand/WhatsAppIcon";
 import {
   PHONE_COUNTRIES,
   formatPhoneDisplay,
@@ -19,13 +18,7 @@ type PhoneNumberInputProps = {
   error?: string | null;
 };
 
-export function PhoneNumberInput({
-  value,
-  onChange,
-  expanded,
-  onExpand,
-  error,
-}: PhoneNumberInputProps) {
+export function PhoneNumberInput({ value, onChange, expanded, onExpand, error }: PhoneNumberInputProps) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -159,18 +152,6 @@ export function PhoneNumberInput({
 
   return (
     <div ref={rootRef} className="px-4 py-3.5">
-      <div className="mb-3 flex items-start gap-3 rounded-[16px] border border-[#DCFCE7] bg-[#F0FDF4] px-3.5 py-3">
-        <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white shadow-sm">
-          <WhatsAppIcon size={22} />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-semibold text-[#166534]">WhatsApp OTP verification</p>
-          <p className="mt-0.5 text-[11px] leading-relaxed text-[#4B5563]">
-            Use a number active on WhatsApp — we&apos;ll send your verification code there.
-          </p>
-        </div>
-      </div>
-
       <label className="mb-1.5 block text-[11px] font-medium text-[#9499A8]" htmlFor={`${listId}-national`}>
         Phone number
       </label>

@@ -408,10 +408,13 @@ export const updateProfileDetails = mutation({
     const user = await findUser(ctx, args.googleSub, args.anonymousId);
     if (!user) throw new Error("User not found");
     const now = Date.now();
+
+    const nextContact = args.contactNumber?.trim() || undefined;
+
     await ctx.db.patch(user._id, {
       firstName: args.firstName,
       lastName: args.lastName,
-      contactNumber: args.contactNumber,
+      contactNumber: nextContact ? `+${nextContact.replace(/\D/g, "")}` : undefined,
       displayName: args.displayName,
       updatedAt: now,
       lastSeenAt: now,

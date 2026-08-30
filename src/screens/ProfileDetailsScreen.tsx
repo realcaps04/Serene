@@ -46,7 +46,15 @@ function ProfileDetailsHeroArt() {
 }
 
 export function ProfileDetailsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { googleUser, firstName, lastName, email, contactNumber, saveProfileDetails, showToast } = useApp();
+  const {
+    googleUser,
+    firstName,
+    lastName,
+    email,
+    contactNumber,
+    saveProfileDetails,
+    showToast,
+  } = useApp();
 
   const [draft, setDraft] = useState<ProfileDetails>({
     firstName,
@@ -314,4 +322,4 @@ export function ProfileDetailsSheet({ open, onClose }: { open: boolean; onClose:
 export function ProfileDetailsScreen() {
   return null;
 }
-
+
